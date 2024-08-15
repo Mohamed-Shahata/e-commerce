@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Verify Code</title>
+</head>
+<body>
+  <div>
+    <form action="/api/auth/verify" method="post">
+      <div>
+        <label for="code">Code</label>
+        <input type="text" name="code" id="code">
+        <input type="hidden" name="email" value="<%=email%>">
+      </div>
+      <button type="submit">Send</button>
+    </form>
+  </div>
+</body>
+</html>
