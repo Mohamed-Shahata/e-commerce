@@ -1,7 +1,3 @@
-# Name Project
-Shoply
-
+# e-commerce
 # Employment
 npm run dev
-
-# ecommerce

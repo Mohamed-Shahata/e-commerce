@@ -6,6 +6,8 @@ const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const path = require("path");
+const passport = require("passport");
+require("./db/passport.js");
 
 //connected MongoDB
 connectDB();
@@ -15,7 +17,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname , "images")));
 
+// //setting dbPassport.js
+app.use(passport.initialize())
 
+
+//setting ejs
 app.set("view engine" , "ejs");
 app.set("views" , "./views");
 

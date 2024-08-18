@@ -9,14 +9,6 @@ const UserSchema = new mongoose.Schema({
     minlenghth: 5,
     maxlenght: 40
   },
-  username:{
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-    minlenghth: 5,
-    maxlenght: 40
-  },
   email:{
     type: String,
     required: true,
@@ -58,8 +50,7 @@ const ValidationRegisterUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
     name: Joi.string().trim().min(5).max(40).required(),
-    username: Joi.string().trim().min(5).max(40).required(),
-    password: Joi.string().trim().min(8).max(20).required(),
+    password: Joi.string().trim().min(8).max(50).required(),
     image: Joi.string().trim()
   });
 
@@ -70,7 +61,7 @@ const ValidationRegisterUser = (obj) => {
 const ValidationLoginUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
-    password: Joi.string().trim().min(8).max(20).required()
+    password: Joi.string().trim().min(8).max(50).required()
   });
 
   return schema.validate(obj);
@@ -81,14 +72,12 @@ const ValidationUpdateUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).email(),
     name: Joi.string().trim().min(5).max(40),
-    username: Joi.string().trim().min(5).max(40),
-    password: Joi.string().trim().min(8).max(20),
+    password: Joi.string().trim().min(8).max(50),
     image: Joi.string().trim()
   });
 
   return schema.validate(obj);
 };
-
 
 
 const User = mongoose.model("User" , UserSchema);

@@ -54,7 +54,7 @@ const updateUser = async(req , res) => {
   }
 
   const id = req.params.id;
-  const { name , password , email , username } = req.body;
+  const { name , password , email } = req.body;
 
 
   try {
@@ -78,7 +78,6 @@ const updateUser = async(req , res) => {
       password: hashPassword,
       email: email || user.email,
       image: image || user.image,
-      username: username || user.username
     }} , { new : true }).select("-password");
 
 

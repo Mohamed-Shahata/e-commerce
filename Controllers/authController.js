@@ -16,7 +16,7 @@ const { sendVerificationCode } = require("../utils/sendEmail.js");
  */
 const registerControllerView = async(req , res) => {
   try {
-    res.render("register");
+    res.render("register/register");
   } catch (err) {
     console.log("Error from registerControllerView: " , err);
     res.status(500).json({ error: "Server error" });
@@ -34,7 +34,7 @@ const registerController = async(req , res) => {
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }
-    const { name , email , username , password } = req.body;
+    const { name , email , password } = req.body;
     const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
     let user = await User.findOne({ email }).select("-password");
@@ -49,12 +49,11 @@ const registerController = async(req , res) => {
       name,
       password: hashPassword,
       email,
-      username,
       vereificationCode
     });
     await user.save();
     await sendVerificationCode(email , vereificationCode);
-    res.render("email_code", { email });
+    res.render("register/email_code", { email });
   } catch (err) {
     console.log("Error from register: " , err);
     res.status(500).json({ error: "Server error" });
@@ -82,7 +81,7 @@ const verifyEmail = async(req , res) => {
     user.registed = true;
     user.vereificationCode = null;
     user.save();
-    res.render("email_code_seccess");
+    res.render("register/email_code_seccess");
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -166,5 +165,5 @@ module.exports = {
   registerController,
   loginController,
   registerControllerView,
-  verifyEmail
+  verifyEmail,
 };
