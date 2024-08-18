@@ -82,12 +82,7 @@ const verifyEmail = async(req , res) => {
     user.registed = true;
     user.vereificationCode = null;
     user.save();
-    
-    const token = await jwt.sign({
-      id: user._id,
-      isAdmin: user.isAdmin
-    }, process.env.JWT_SECRET_KEY , { expiresIn: "1d" });
-    res.status(200).json({message: "Account verified successfully" , user , token})
+    res.render("email_code_seccess");
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);

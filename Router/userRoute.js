@@ -20,7 +20,7 @@ router.get("/" , verifyTokenAndAdmin ,  getAllUser);
 // /api/users/id
 router.route("/:id")
                   .get(verifyToken , getSingleUser)
-                  .put(verifyTokenAndAutherization , upload.single("image") , updateUser)
+                  .patch(verifyTokenAndAutherization , upload.single("image") , updateUser)
                   .delete(verifyTokenAndAutherization , deleteUser)
 
 

@@ -55,7 +55,7 @@ const updateUser = async(req , res) => {
 
   const id = req.params.id;
   const { name , password , email , username } = req.body;
-  const image = req.file.path;
+
 
   try {
     const user = await User.findById(id);
@@ -64,12 +64,18 @@ const updateUser = async(req , res) => {
       return res.status(404).json({message: "User not found"});
     }
 
-    const salt = await bcryptjs.genSalt(10);
-    const hashPassword = await bcryptjs.hash(password , salt);
+    const image = req.file ? req.file.path : user.image;
+
+    let hashPassword = user.password;
+    if(password){
+      const salt = await bcryptjs.genSalt(10);
+      hashPassword = await bcryptjs.hash(password , salt);
+    }
+
 
     const userUpdate = await User.findByIdAndUpdate(user._id , {$set:{
       name: name || user.name,
-      password: hashPassword || user.password,
+      password: hashPassword,
       email: email || user.email,
       image: image || user.image,
       username: username || user.username

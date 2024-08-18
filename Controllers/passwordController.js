@@ -31,6 +31,10 @@ const sendForgotPasswordLink = async(req , res) => {
       return res.status(404).json({message: "User not found"});
     };
 
+    if(user.registed === false){
+      return res.status(400).json({message: "Complete creating your account"})
+    }
+
     const secret = process.env.JWT_SECRET_KEY + user.password;
   try {
 
