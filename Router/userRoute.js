@@ -10,8 +10,8 @@ const {
   verifyTokenAndAdmin,
   verifyTokenAndAutherization
 } = require("../middlewares/verifyToken");
-const upload = require("../middlewares/uploadImage.js");
 const router = express.Router();
+const upload = require("../middlewares/uploadImage.js");
 
 
 // /api/users

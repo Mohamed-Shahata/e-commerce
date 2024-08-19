@@ -1,6 +1,7 @@
 const { User, ValidationUpdateUser } = require("../Model/User.js");
 const bcryptjs = require("bcryptjs");
 const fs = require("fs");
+const cloudinary = require("../config/cloudinary.js");
 
 /**
  * @description Get All Users
@@ -55,31 +56,33 @@ const updateUser = async(req , res) => {
 
   const id = req.params.id;
   const { name , password , email } = req.body;
-
-
   try {
     const user = await User.findById(id);
-
     if(!user){
       return res.status(404).json({message: "User not found"});
     }
 
-    const image = req.file ? req.file.path : user.image;
+    if(req.file){
+      const result = await cloudinary.uploader.upload(req.file.path,{
+        folder: "user-profile"
+      });
+      if(user.image !== result.secure_url){
+        user.image = result.secure_url;
+        await user.save();
+      }
 
+      fs.unlinkSync(req.file.path);
+    };
     let hashPassword = user.password;
     if(password){
       const salt = await bcryptjs.genSalt(10);
       hashPassword = await bcryptjs.hash(password , salt);
     }
-
-
     const userUpdate = await User.findByIdAndUpdate(user._id , {$set:{
       name: name || user.name,
       password: hashPassword,
       email: email || user.email,
-      image: image || user.image,
     }} , { new : true }).select("-password");
-
 
     res.status(200).json({message: "Updated user successfully" , user: userUpdate});
   } catch (err) {

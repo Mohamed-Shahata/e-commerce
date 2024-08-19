@@ -1,13 +1,13 @@
 const express = require("express");
 require("dotenv").config();
-const connectDB = require("./db/configDB");
+const connectDB = require("./config/db.js");
 const app = express();
 const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const path = require("path");
 const passport = require("passport");
-require("./db/passport.js");
+require("./config/passport.js");
 const cors = require("cors");
 
 //connected MongoDB
