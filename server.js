@@ -8,16 +8,18 @@ const passwordRoute = require("./Router/passwordRoute.js");
 const path = require("path");
 const passport = require("passport");
 require("./db/passport.js");
+const cors = require("cors");
 
 //connected MongoDB
 connectDB();
 
 //middlewares
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname , "images")));
 
-// //setting dbPassport.js
+// //setting db/passport
 app.use(passport.initialize())
 
 
@@ -25,7 +27,7 @@ app.use(passport.initialize())
 app.set("view engine" , "ejs");
 app.set("views" , "./views");
 
-//Route
+//Routes
 app.use("/api/auth" , authRoute);
 app.use("/api/users" , usersRoute);
 app.use("/password" , passwordRoute);

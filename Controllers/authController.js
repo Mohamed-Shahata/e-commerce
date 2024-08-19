@@ -38,9 +38,18 @@ const registerController = async(req , res) => {
     const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
     let user = await User.findOne({ email }).select("-password");
-    if(user){
+
+
+    if(user && user.registed === true){
       return res.status(400).json({message: "User already exsist"});
-    };
+    }else if(user && user.registed === false){
+
+      const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
+      user.vereificationCode = vereificationCode;
+      await user.save();
+      await sendVerificationCode(email , vereificationCode);
+      return res.render("register/email_code", { email });
+    }else{
 
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password , salt);
@@ -54,6 +63,7 @@ const registerController = async(req , res) => {
     await user.save();
     await sendVerificationCode(email , vereificationCode);
     res.render("register/email_code", { email });
+  }
   } catch (err) {
     console.log("Error from register: " , err);
     res.status(500).json({ error: "Server error" });
@@ -93,31 +103,18 @@ const verifyEmail = async(req , res) => {
 };
 
 // const sendNewCode = async() => {
-//   const { email , code } = req.body;
-//   const newVereificationCode =  Math.floor(10000 + Math.random() * 900000).toString();
-//   const user = await User.findOne({ email });
-//   if(!user){
-//     return res.status(404).json({message: "User not found"});
-//   };
-
-//   user.vereificationCode = newVereificationCode;
-//   await user.save();
-
-//   await sendVerificationCode(email , newVereificationCode);
-
-//   if(user.vereificationCode !== code){
-//     return res.status(400).json({message: "Invalid verifaction code"});
-//   };
-
-//   user.registed = true;
-//   user.vereificationCode = null;
-//   user.save();
-
-//   const token = await jwt.sign({
-//     id: user._id,
-//     isAdmin: user.isAdmin
-//   }, process.env.JWT_SECRET_KEY , { expiresIn: "1d" });
-//   res.status(200).json({message: "Account verified successfully" , user , token})
+//   const { email } = req.body;
+//   const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
+//   try {
+//     const user = await User.findOne({ email });
+//     user.vereificationCode = vereificationCode;
+//     await user.save();
+//     await sendVerificationCode(email , vereificationCode);
+//     res.render("register/new_code" , { email });
+//   } catch (err) {
+//     console.log("Error from sendNewCode: " , err);
+//     res.status(500).json({ error: "Server error" });
+//   }
 // }
 
 /**
