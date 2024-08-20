@@ -35,6 +35,10 @@ const UserSchema = new mongoose.Schema({
     type: String,
     default: "default-image.png"
   },
+  imagePublicId:{
+    type: String,
+    default: ""
+  },
   isAdmin:{
     type: Boolean,
     default: false
@@ -45,7 +49,7 @@ const UserSchema = new mongoose.Schema({
   }
 });
 
-// function ValidationRegisterUser
+// function Validation Register User
 const ValidationRegisterUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
@@ -57,7 +61,7 @@ const ValidationRegisterUser = (obj) => {
   return schema.validate(obj);
 };
 
-// function ValidationLoginUser
+// function Validation Login User
 const ValidationLoginUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
@@ -67,7 +71,7 @@ const ValidationLoginUser = (obj) => {
   return schema.validate(obj);
 };
 
-// function ValidationUpdateUser
+// function Validation Update User
 const ValidationUpdateUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).email(),

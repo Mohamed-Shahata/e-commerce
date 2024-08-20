@@ -58,14 +58,51 @@ const updateUser = async(req , res) => {
     if(!user){
       return res.status(404).json({message: "User not found"});
     }
-    if(req.file){
-      const result = await cloudinary.uploader.upload(req.file.path,{
-        folder:"user-profiles"
+
+    //delete image path
+    const deleteImagePath = (imagePath) => {
+      fs.unlink(imagePath , (err)=> {
+        if(err){
+          console.log("err: " + err);
+        }
+        console.log("success deleted");
       });
-        user.image = result.secure_url;
-        await user.save();
-        fs.unlinkSync(req.file.path);
     }
+
+    if(req.file){
+      if(user.image !== ""){
+        const publicId = user.image.split("/").slice(-2).join("/").split('.')[0];
+        await cloudinary.uploader.destroy(publicId);
+        const result = await cloudinary.uploader.upload(req.file.path,{
+          folder: "user-profiles"
+        });
+        user.image = result.secure_url;
+        user.imagePublicId = user.image.split("/").slice(-2).join("/").split('.')[0];
+        await user.save();
+        
+        deleteImagePath(req.file.path);
+      }else if(user.image !== "" && user.imagePublicId === ""){
+        const result = await cloudinary.uploader.upload(req.file.path,{
+          folder: "user-profiles"
+        });
+        user.image = result.secure_url;
+        user.imagePublicId = user.image.split("/").slice(-2).join("/").split('.')[0];
+        await user.save();
+
+        deleteImagePath(req.file.path);
+      }
+      else{
+        const result = await cloudinary.uploader.upload(req.file.path,{
+          folder: "user-profiles"
+        });
+        user.image = result.secure_url;
+        user.imagePublicId = user.image.split("/").slice(-2).join("/").split('.')[0];
+        await user.save();
+
+        deleteImagePath(req.file.path);
+      }
+    }
+
     let hashPassword = user.password;
     if(password){
       const salt = await bcryptjs.genSalt(10);
@@ -76,6 +113,9 @@ const updateUser = async(req , res) => {
       password: hashPassword,
       email: email || user.email,
     }} , { new : true }).select("-password");
+    await user.save();
+
+
     res.status(200).json({message: "Updated user successfully" , user: userUpdate});
   } catch (err) {
     console.log("Error from updateUser: ", err);
