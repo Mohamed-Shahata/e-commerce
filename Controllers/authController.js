@@ -85,7 +85,7 @@ const verifyEmail = async(req , res) => {
     }
 
     if(user.vereificationCode !== code){
-      return res.status(400).json({message: "Invalid verifaction code"});
+      return res.render("password_pages/invalid_code");
     }
 
     user.registed = true;
@@ -159,17 +159,17 @@ const loginController = async(req , res) => {
     const comparePassword = await bcryptjs.compare(password , user.password);
 
     if(email !== user.email){
-      return res.status(400).json({message: "email or password is wrong"});
+      return res.render("login/password_or_email_valid")
     }
     if(comparePassword == false){
-      return res.status(400).json({message: "email or password is wrong"});
+      return res.render("login/password_or_email_valid")
     }
     const token = await jwt.sign({
       id: user._id,
       isAdmin: user.isAdmin
     } , process.env.JWT_SECRET_KEY , {expiresIn: "1d"});
 
-    res.status(200).json({message: "Login user successfully" , user , token});
+    res.status(200).json({message: "login successfully" , user , token})
   } catch (err) {
     console.log("Error from Login: " , err);
     res.status(500).json({ error: "Server error" });

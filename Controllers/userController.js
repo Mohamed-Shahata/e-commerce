@@ -99,7 +99,9 @@ const deleteUser = async(req , res) => {
     if(!user){
       return res.status(404).json({message: "User not found"});
     };
-    await cloudinary.uploader.destroy(user.imagePublicId);
+    if(user.imagePublicId !== ""){
+      await cloudinary.uploader.destroy(user.imagePublicId);
+    }
     res.status(200).json({message: "deleted user successfully"});
   } catch (err) {
     console.log("Error from deleteUser: ", err);
