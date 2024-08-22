@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login</title>
+</head>
+<body>
+  <div>
+    <form action="/api/auth/login" method="post">
+      <div>
+        <label for="email">Email</label>
+        <input type="email" name="email" id="email">
+      </div>
+      <div>
+        <label for="password">Password</label>
+        <input type="password" name="password" id="password">
+      </div>
+      <button type="submit">Send</button>
+    </form>
+    <h2>Or</h2>
+    <button><a href="/api/auth/google">Sign in with google</a></button>
+  </div>
+</body>
+</html>

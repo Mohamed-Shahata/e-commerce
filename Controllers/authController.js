@@ -117,6 +117,24 @@ const verifyEmail = async(req , res) => {
 //   }
 // }
 
+
+
+/**
+ * @description Login Controller View
+ * @route       /api/auth/login
+ * @method      GET
+ * @access      public
+ */
+const loginControllerView = async(req , res) => {
+  try {
+    res.render("login/login");
+  } catch (err) {
+    console.log("Error from loginControllerView: " , err);
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
 /**
  * @description Login 
  * @route       /api/auth/login
@@ -163,4 +181,5 @@ module.exports = {
   loginController,
   registerControllerView,
   verifyEmail,
+  loginControllerView
 };
