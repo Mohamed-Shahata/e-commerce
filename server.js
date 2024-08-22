@@ -2,13 +2,14 @@ const express = require("express");
 require("dotenv").config();
 const connectDB = require("./config/db.js");
 const app = express();
-const authRoute = require("./Router/authRoute.js");
-const usersRoute = require("./Router/userRoute.js");
-const passwordRoute = require("./Router/passwordRoute.js");
 const path = require("path");
 const passport = require("passport");
 require("./config/passport.js");
 const cors = require("cors");
+const authRoute = require("./Router/authRoute.js");
+const usersRoute = require("./Router/userRoute.js");
+const passwordRoute = require("./Router/passwordRoute.js");
+const productsRoute = require("./Router/productRoute.js");
 
 //connected MongoDB
 connectDB();
@@ -31,6 +32,7 @@ app.set("views" , "./views");
 app.use("/api/auth" , authRoute);
 app.use("/api/users" , usersRoute);
 app.use("/password" , passwordRoute);
+app.use("/api/products" , productsRoute);
 
 
 const PORT = process.env.PORT || 3000;

@@ -25,6 +25,22 @@ const ProductSchema = new mongoose.Schema({
     type: String,
     required: true,
     enum: ["tv" , "clothes" , "shoes" , "laptop" , "phone"]
+  },
+  images:[
+    {
+      url:{
+        type: String,
+        required: true
+      },
+      publicId:{
+        type: String,
+        required: true
+      }
+    }
+  ],
+  createAt:{
+    type: Date,
+    default: Date.now()
   }
 });
 
@@ -34,7 +50,7 @@ const ValidationCreateProduct = (obj) => {
     name: Joi.string().min(2).max(50).required().trim(),
     description: Joi.string().min(2).max(1000).required().trim(),
     price: Joi.number().min(0).required(),
-    category: Joi.string().required()
+    category: Joi.string().required(),
   })
   return schema.validate(obj);
 }
@@ -45,7 +61,7 @@ const ValidationUpdateProduct = (obj) => {
     name: Joi.string().min(2).max(50).trim(),
     description: Joi.string().min(2).max(1000).trim(),
     price: Joi.number().min(0),
-    category: Joi.string()
+    category: Joi.string(),
   })
   return schema.validate(obj);
 }
