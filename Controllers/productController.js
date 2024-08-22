@@ -1,5 +1,4 @@
-const { url } = require("../config/cloudinary.js");
-const { Product, ValidationCreateProduct } = require("../Model/Product.js");
+const { Product, ValidationCreateProduct, ValidationUpdateProduct } = require("../Model/Product.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -11,7 +10,7 @@ const cloudinary = require("cloudinary").v2;
 const getAllProducts = async(req , res) => {
   try {
     const products = await Product.find();
-    res.status(200).json({ product });
+    res.status(200).json({ products });
   } catch (err) {
     console.log("Error from getAllProducts: ", err);
     res.status(500).json({error: "Server error"});
@@ -45,12 +44,10 @@ const getSingleProducts = async(req , res) => {
  * @access      private
  */
 const createProduct = async(req , res) => {
-
   const { error } = ValidationCreateProduct(req.body);
   if(error){
     return res.status(400).json({message: error.details[0].message})
   }
-
   const { name , description , price , category } = req.body;
   let images = [];
   try {
@@ -62,7 +59,6 @@ const createProduct = async(req , res) => {
     }else{
       return res.status(400).json({ message: "image is required"});
     }
-
     const product = new Product({
       name,
       description,
@@ -71,7 +67,6 @@ const createProduct = async(req , res) => {
       images
     });
     await product.save();
-
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
     console.log("Error from createProduct: ", err);
@@ -79,31 +74,49 @@ const createProduct = async(req , res) => {
   }
 }
 
-
 /**
  * @description Update Product
  * @route       /api/products
- * @method      PATCH
+ * @method      PUT
  * @access      private
  */
 const updateProduct = async(req , res) => {
+  const { error } = ValidationUpdateProduct(req.body);
+  if(error){
+    return res.status(400).json({message: error.details[0].message})
+  }
   const id = req.params.id;
-  const { name , description , price , category } = req.body;
+  const { name , price , category , description } = req.body;
   try {
-    const product = await Product.findByIdAndUpdate(id , {
-      $set:{
-        name,
-        description,
-        price,
-        category
+    const product = await Product.findById(id);
+    if(!product){
+      return res.status(404).json({message: "Product not found"});
+    }
+    product.name = name || product.name;
+    product.price = price || product.price;
+    product.category = category || product.category;
+    product.description = description || product.description;
+    let images = [];
+    if(req.files.length !== 0){
+      for(let i = 0 ; i < product.images.length; i++){
+        await cloudinary.uploader.destroy(product.images[i].publicId);
       }
-    } , { new: true });
+      
+      if(req.files.length > 0){
+        images = req.files.map(file => ({
+          url: file.path,
+          publicId: file.filename
+        }));
+      }
+    }
+    product.images = (images.length === 0) ? product.images : images;
+    await product.save();
+    res.status(200).json({message: "Updated product successfully" , product})
   } catch (err) {
     console.log("Error from updateProduct: ", err);
     res.status(500).json({error: "Server error"});
   }
 };
-
 
 /**
  * @description Delete A Product
@@ -118,7 +131,9 @@ const deleteproduct = async(req , res) => {
     if(!product){
       return res.status(404).json({message: "Product not found"});
     }
-
+    for(let i = 0; i < product.images.length; i++){
+      await cloudinary.uploader.destroy(product.images[i].publicId)
+    };
     res.status(200).json({message: "Deleted product successfully"});
   } catch (err) {
     console.log("Error from deleteproduct: ", err);
@@ -129,5 +144,6 @@ module.exports = {
   getAllProducts,
   getSingleProducts,
   createProduct,
+  updateProduct,
   deleteproduct
-}
+};

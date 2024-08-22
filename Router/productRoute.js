@@ -1,22 +1,27 @@
 const express = require("express");
-const { verifyToken, verifyTokenAndAdmin } = require("../middlewares/verifyToken");
+const {
+  verifyToken,
+  verifyTokenAndAdmin
+  } = require("../middlewares/verifyToken");
 const upload = require("../middlewares/uploadImage");
 const {
-  createProduct
+  createProduct,
+  updateProduct,
+  deleteproduct,
+  getAllProducts,
+  getSingleProducts
 } = require("../Controllers/productController");
 const router = express.Router();
 
 
 router.route("/")
-                  .get(verifyToken , )
-                  .post(verifyTokenAndAdmin , upload.array("images") , createProduct )
+                  .get(verifyToken , getAllProducts)
+                  .post(verifyToken , upload.array("images") , createProduct )
 
 router.route("/:id")
-                  .get(verifyToken , )
-                  .patch(verifyTokenAndAdmin , upload.array("images") , )
-                  .delete(verifyTokenAndAdmin , )
-
-
+                  .get(verifyToken , getSingleProducts)
+                  .put(verifyTokenAndAdmin , upload.array("images") , updateProduct)
+                  .delete(verifyTokenAndAdmin , deleteproduct)
 
 
 module.exports = router;
