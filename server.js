@@ -6,6 +6,7 @@ const path = require("path");
 const passport = require("passport");
 require("./config/passport.js");
 const cors = require("cors");
+const compression = require("compression");
 const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
@@ -17,6 +18,7 @@ connectDB();
 
 //middlewares
 app.use(cors());
+app.use(compression());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname , "images")));
