@@ -11,7 +11,7 @@ const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const productsRoute = require("./Router/productRoute.js");
-const fawryPaymentRoute = require("./Router/fawryPaymentRoute.js");
+const payment = require("./Router/paymentRoute.js");
 
 //connected MongoDB
 connectDB();
@@ -36,7 +36,7 @@ app.use("/api/auth" , authRoute);
 app.use("/api/users" , usersRoute);
 app.use("/password" , passwordRoute);
 app.use("/api/products" , productsRoute);
-app.use("/api/fawry-payment" , fawryPaymentRoute);
+app.use("/api" , payment);
 
 //listen server
 const PORT = process.env.PORT || 3000;
