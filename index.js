@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-require("./config/db.js");
+const connectDB = require("./config/db.js");
 const app = express();
 const path = require("path");
 const passport = require("passport");
@@ -12,6 +12,9 @@ const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const productsRoute = require("./Router/productRoute.js");
 const payment = require("./Router/paymentRoute.js");
+
+
+connectDB();
 
 //middlewares
 app.use(cors());
