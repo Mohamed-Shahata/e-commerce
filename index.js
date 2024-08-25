@@ -23,7 +23,6 @@ app.use(express.static(path.join(__dirname , "images")));
 //setting db/passport
 app.use(passport.initialize())
 
-
 //setting ejs
 app.set("view engine" , "ejs");
 app.set("views" , "./views");
