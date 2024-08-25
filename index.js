@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const connectDB = require("./config/db.js");
+require("./config/db.js");
 const app = express();
 const path = require("path");
 const passport = require("passport");
@@ -14,7 +14,7 @@ const productsRoute = require("./Router/productRoute.js");
 const payment = require("./Router/paymentRoute.js");
 
 //connected MongoDB
-connectDB();
+
 
 //middlewares
 app.use(cors());
