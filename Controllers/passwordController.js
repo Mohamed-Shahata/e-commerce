@@ -11,7 +11,7 @@ const bcryptjs = require("bcryptjs");
  */
 const forgotPasswordView = (req , res) => {
   try {
-    res.send("This page forgot password")
+    res.render("password_pages/forgot_password");
   } catch (err) {
     console.log("error forgotPasswordView: " , err)
     res.status(500).json({error: "Server error"});
@@ -75,7 +75,7 @@ const sendForgotPasswordLink = async(req , res) => {
       }
     });
 
-    res.send("This page forgot password")
+    res.render("password_pages/send_link");
 
   } catch (err) {
     console.log("error sendForgotPasswordLink: " , err)
@@ -100,7 +100,7 @@ const getResetPasswordView = async(req , res) => {
 
   try {
     jwt.verify(req.params.token , secret);
-    res.send("This page forgot password")
+    res.render("password_pages/rest_password" , {email: user.email});
   } catch (err) {
     console.log("error getResetPasswordView: " , err);
     res.status(500).json({error: "Server error"});
@@ -127,7 +127,7 @@ const resetThePassword = async(req , res) => {
     user.password = await bcryptjs.hash(req.body.password , salt);
     await user.save();
 
-    res.send("This page forgot password")
+    res.render("password_pages/success-password");
   } catch (err) {
     console.log("error resetThePassword: " , err);
     res.status(500).json({error: "Server error"});

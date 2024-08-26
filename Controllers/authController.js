@@ -16,7 +16,7 @@ const { sendVerificationCode } = require("../utils/sendEmail.js");
  */
 const registerControllerView = async(req , res) => {
   try {
-    res.send("register page")
+    res.render("register/register");
   } catch (err) {
     console.log("Error from registerControllerView: " , err);
     res.status(500).json({ error: "Server error" });
@@ -62,7 +62,7 @@ const registerController = async(req , res) => {
     });
     await user.save();
     await sendVerificationCode(email , vereificationCode);
-    res.send("register page")
+    res.render("register/email_code", { email });
   }
   } catch (err) {
     console.log("Error from register: " , err);
@@ -91,7 +91,7 @@ const verifyEmail = async(req , res) => {
     user.registed = true;
     user.vereificationCode = null;
     user.save();
-    res.send("register page")
+    res.render("register/email_code_seccess");
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -127,7 +127,7 @@ const verifyEmail = async(req , res) => {
  */
 const loginControllerView = async(req , res) => {
   try {
-    res.send("login page")
+    res.render("login/login");
   } catch (err) {
     console.log("Error from loginControllerView: " , err);
     res.status(500).json({ error: "Server error" });
@@ -169,7 +169,7 @@ const loginController = async(req , res) => {
       isAdmin: user.isAdmin
     } , process.env.JWT_SECRET_KEY , {expiresIn: "1d"});
 
-    res.send("login page")
+    res.status(200).json({message: "login successfully" , user , token})
   } catch (err) {
     console.log("Error from Login: " , err);
     res.status(500).json({ error: "Server error" });
