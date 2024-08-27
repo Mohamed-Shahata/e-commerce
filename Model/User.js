@@ -2,7 +2,14 @@ const Joi = require("joi");
 const mongoose = require("mongoose");
 
 const UserSchema = new mongoose.Schema({
-  name:{
+  firstName:{
+    type: String,
+    required: true,
+    trim: true,
+    minlenghth: 5,
+    maxlenght: 40
+  },
+  lastName:{
     type: String,
     required: true,
     trim: true,
@@ -53,7 +60,8 @@ const UserSchema = new mongoose.Schema({
 const ValidationRegisterUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
-    name: Joi.string().trim().min(5).max(40).required(),
+    firstName: Joi.string().trim().min(5).max(40).required(),
+    lastName: Joi.string().trim().min(5).max(40).required(),
     password: Joi.string().trim().min(8).max(50).required(),
     image: Joi.string().trim()
   });
@@ -75,7 +83,8 @@ const ValidationLoginUser = (obj) => {
 const ValidationUpdateUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).email(),
-    name: Joi.string().trim().min(5).max(40),
+    firstName: Joi.string().trim().min(5).max(40),
+    lastName: Joi.string().trim().min(5).max(40),
     password: Joi.string().trim().min(8).max(50),
     image: Joi.string().trim()
   });

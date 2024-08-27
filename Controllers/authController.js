@@ -30,11 +30,11 @@ const registerControllerView = async(req , res) => {
  * @access      public
  */
 const registerController = async(req , res) => {
-  const { error } = ValidationRegisterUser(req.body);
+  const { firstName , lastName , email , password , confirmPassword } = req.body;
+  const { error } = ValidationRegisterUser({firstName , lastName , email , password});
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }
-    const { name , email , password } = req.body;
     const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
     let user = await User.findOne({ email }).select("-password");
@@ -44,25 +44,35 @@ const registerController = async(req , res) => {
       return res.status(400).json({message: "User already exsist"});
     }else if(user && user.registed === false){
 
+      if(confirmPassword !== password){
+        return res.status(401).json({message: "The password is not the same"})
+      }
       const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
       user.vereificationCode = vereificationCode;
       await user.save();
       await sendVerificationCode(email , vereificationCode);
-      return res.render("register/email_code", { email });
+      return res.status(401).json({message: "The code is worng"});
     }else{
+
+      if(confirmPassword !== password){
+        return res.status(401).json({message: "The password is not the same"})
+      }
 
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password , salt);
 
     user = new User({
-      name,
+      firstName,
+      lastName,
       password: hashPassword,
       email,
       vereificationCode
     });
     await user.save();
     await sendVerificationCode(email , vereificationCode);
-    res.render("register/email_code", { email });
+
+
+    res.render("register/email_code" , { email });
   }
   } catch (err) {
     console.log("Error from register: " , err);
@@ -85,13 +95,19 @@ const verifyEmail = async(req , res) => {
     }
 
     if(user.vereificationCode !== code){
-      return res.render("password_pages/invalid_code");
+      return res.status(401).json({message: "The code is worng"})
     }
 
     user.registed = true;
     user.vereificationCode = null;
     user.save();
-    res.render("register/email_code_seccess");
+
+    const token = await jwt.sign({
+      id: user._id,
+      isAdmin: user.isAdmin
+    } , process.env.JWT_SECRET_KEY , {expiresIn: "1d"});
+
+    return res.status(401).json({message: "verify successfully" , user , token})
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -159,10 +175,10 @@ const loginController = async(req , res) => {
     const comparePassword = await bcryptjs.compare(password , user.password);
 
     if(email !== user.email){
-      return res.render("login/password_or_email_valid")
+      return res.status(401).json({message: "email or password is worng"})
     }
     if(comparePassword == false){
-      return res.render("login/password_or_email_valid")
+      return res.status(401).json({message: "email or password is worng"})
     }
     const token = await jwt.sign({
       id: user._id,

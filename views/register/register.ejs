@@ -9,8 +9,12 @@
   <div>
     <form action="/api/auth/register" method="post">
       <div>
-        <label for="name">Name</label>
-        <input type="text" name="name" id="name">
+        <label for="firstName">firstName</label>
+        <input type="text" name="firstName" id="firstName">
+      </div>
+      <div>
+        <label for="lastName">lastName</label>
+        <input type="text" name="lastName" id="lastName">
       </div>
       <div>
         <label for="email">Email</label>
@@ -20,11 +24,15 @@
         <label for="password">Password</label>
         <input type="password" name="password" id="password">
       </div>
+      <div>
+        <label for="confirmPassword">confirmPassword</label>
+        <input type="password" name="confirmPassword" id="confirmPassword">
+      </div>
       <button type="submit">Send</button>
     </form>
     <h2>Or</h2>
 
-    <button><a href="/api/auth/google">Sign in with google</a></button>
+    <button><a href="/api/auth/google/register">Sign in with google</a></button>
   </div>
 </body>
 </html>
