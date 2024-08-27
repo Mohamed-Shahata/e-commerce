@@ -21,11 +21,39 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     min: 0
   },
+  newPrice:{
+    type: Number,
+    min: 0
+  },
+  discount:{
+    type: Number,
+    min: 0,
+    default: 0
+  },
+  quantity:{
+    type: Number,
+    min: 1,
+    default: 1
+  },
   category:{
     type: String,
     required: true,
     enum: ["tv" , "clothes" , "shoes" , "laptop" , "phone"]
   },
+  reviews:[
+    {
+      user:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
+      },
+      averageRating:{
+        type: Number,
+        default: 0,
+        min: 0,
+        max: 5
+      }
+    }
+  ],
   images:[
     {
       url:{
@@ -50,6 +78,8 @@ const ValidationCreateProduct = (obj) => {
     name: Joi.string().min(2).max(50).required().trim(),
     description: Joi.string().min(2).max(1000).required().trim(),
     price: Joi.number().min(0).required(),
+    discount: Joi.number().min(0),
+    quantity: Joi.number().min(1),
     category: Joi.string().required(),
   })
   return schema.validate(obj);
@@ -61,6 +91,8 @@ const ValidationUpdateProduct = (obj) => {
     name: Joi.string().min(2).max(50).trim(),
     description: Joi.string().min(2).max(1000).trim(),
     price: Joi.number().min(0),
+    discount: Joi.number().min(0),
+    quantity: Joi.number().min(1),
     category: Joi.string(),
   })
   return schema.validate(obj);

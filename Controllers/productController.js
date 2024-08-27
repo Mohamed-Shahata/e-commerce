@@ -8,8 +8,13 @@ const cloudinary = require("cloudinary").v2;
  * @access      public
  */
 const getAllProducts = async(req , res) => {
+  const { pageNum } = req.query;
   try {
-    const products = await Product.find();
+    const pageProducts = 12;
+    const products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
+    if(products.length === 0){
+      return res.status(200).json({message: "Not product"});
+    }
     res.status(200).json({ products });
   } catch (err) {
     console.log("Error from getAllProducts: ", err);
@@ -48,7 +53,8 @@ const createProduct = async(req , res) => {
   if(error){
     return res.status(400).json({message: error.details[0].message})
   }
-  const { name , description , price , category } = req.body;
+  const { name , description , price , category , discount , quantity } = req.body;
+
   let images = [];
   try {
     if(req.files && req.files.length > 0){
@@ -60,9 +66,12 @@ const createProduct = async(req , res) => {
       return res.status(400).json({ message: "image is required"});
     }
     const product = new Product({
+      quantity,
       name,
       description,
       price,
+      newPrice: price * (1 - (discount / 100)) || 0,
+      discount,
       category,
       images
     });
@@ -139,11 +148,118 @@ const deleteproduct = async(req , res) => {
     console.log("Error from deleteproduct: ", err);
     res.status(500).json({error: "Server error"});
   }
+};
+
+
+const reviewProduct = async(req ,res) => {
+  const { reviewNum , userId } = req.body
+  const id = req.params.id;
+  try {
+
+    if(!userId){
+      return res.status(404).json({message: "User not found"})
+    }
+
+    const product = await Product.findById(id);
+    if(!product){
+      return res.status(404).json({message: "Product not found"})
+    }
+  
+    if(reviewNum < 1 || reviewNum > 5){
+      return res.status(400).json({message: "num from 1 to 5"});
+    }
+
+    const vewiewAlreadyExists = product.reviews.find(review => review.user.toString() === userId)
+    if(vewiewAlreadyExists){
+      return res.status(404).json({message: "The user is already valuable"}) 
+    }
+
+    product.reviews.push({user: userId , averageRating: reviewNum});
+    await product.save();
+
+    res.status(200).json({product});
+  } catch (err) {
+    console.log("Error from createReviewProduct: ", err);
+    res.status(500).json({error: "Server error"});
+  }
 }
+
+const updateReviewProduct = async(req ,res) => {
+  const { reviewNum , userId } = req.body
+  const id = req.params.id;
+  try {
+
+    if(!userId){
+      return res.status(404).json({message: "User not found"})
+    }
+
+    const product = await Product.findById(id);
+    if(!product){
+      return res.status(404).json({message: "Product not found"})
+    }
+
+    const reviewProduct = product.reviews.find(review => review.user.toString() === userId)
+    if(!reviewProduct){
+      return res.status(404).json({message: "reviewProduct not found"})
+    }
+
+    if(reviewNum < 1 || reviewNum > 5){
+      return res.status(400).json({message: "num from 1 to 5"});
+    }
+    
+    reviewProduct.user = userId || reviewProduct.user;
+    reviewProduct.averageRating = reviewNum || reviewProduct.averageRating
+    await product.save();
+    res.status(200).json({product});
+  } catch (err) {
+    console.log("Error from createReviewProduct: ", err);
+    res.status(500).json({error: "Server error"});
+  }
+}
+
+const deleteReviewProduct = async(req ,res) => {
+  const { userId } = req.body
+  const id = req.params.id;
+  try {
+
+    if(!userId){
+      return res.status(404).json({message: "User not found"})
+    }
+
+    let product = await Product.findById(id);
+    if(!product){
+      return res.status(404).json({message: "Product not found"})
+    }
+
+    const review = product.reviews.find(review => review.user.toString() === userId)
+    if(!review){
+      return res.status(404).json({message: "reviewProduct not found"})
+    }
+
+    product = await Product.findByIdAndUpdate(product._id , {
+      $pull:{
+        reviews: {
+          _id : review._id
+        }
+      }
+    }, {new: true});
+    await product.save();
+    res.status(200).json({product});
+  } catch (err) {
+    console.log("Error from createReviewProduct: ", err);
+    res.status(500).json({error: "Server error"});
+  }
+}
+
+
+
 module.exports = {
   getAllProducts,
   getSingleProducts,
   createProduct,
   updateProduct,
-  deleteproduct
+  deleteproduct,
+  reviewProduct,
+  updateReviewProduct,
+  deleteReviewProduct
 };
