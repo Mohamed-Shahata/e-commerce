@@ -9,21 +9,6 @@ const { sendVerificationCode } = require("../utils/sendEmail.js");
 
 
 /**
- * @description Register Controller View
- * @route       /api/auth/register
- * @method      GET
- * @access      public
- */
-const registerControllerView = async(req , res) => {
-  try {
-    res.render("register/register");
-  } catch (err) {
-    console.log("Error from registerControllerView: " , err);
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
-/**
  * @description Register
  * @route       /api/auth/register
  * @method      POST
@@ -71,8 +56,7 @@ const registerController = async(req , res) => {
     await user.save();
     await sendVerificationCode(email , vereificationCode);
 
-
-    res.render("register/email_code" , { email });
+    res.status(200).json({ email });
   }
   } catch (err) {
     console.log("Error from register: " , err);
@@ -136,22 +120,6 @@ const verifyEmail = async(req , res) => {
 
 
 /**
- * @description Login Controller View
- * @route       /api/auth/login
- * @method      GET
- * @access      public
- */
-const loginControllerView = async(req , res) => {
-  try {
-    res.render("login/login");
-  } catch (err) {
-    console.log("Error from loginControllerView: " , err);
-    res.status(500).json({ error: "Server error" });
-  }
-};
-
-
-/**
  * @description Login 
  * @route       /api/auth/login
  * @method      POST
@@ -195,7 +163,5 @@ const loginController = async(req , res) => {
 module.exports = {
   registerController,
   loginController,
-  registerControllerView,
   verifyEmail,
-  loginControllerView
 };

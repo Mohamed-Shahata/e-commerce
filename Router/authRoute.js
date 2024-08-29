@@ -11,14 +11,12 @@ const router = express.Router();
 
 
 router.route("/register")
-                        .get(registerControllerView)
                         .post(registerController)
 
 router.route("/verify")
                       .post(verifyEmail);
 
 router.route("/login")
-                      .get(loginControllerView)
                       .post(loginController)
 
 
