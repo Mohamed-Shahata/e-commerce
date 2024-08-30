@@ -56,12 +56,9 @@ passport.use("googleLogin", new GoogleStratgy({
       if(!user){
         return done(null , false , {message: "No account found for this Google account"})
       }
-      const token = await jwt.sign({
-        id: user._id,
-        isAdmin: user.isAdmin
-      }, process.env.JWT_SECRET_KEY , { expiresIn: "1d"});
+
   
-      return done(null , {user , token})
+      return done(null , { user })
     } catch (err) {
       done(err , false)
     }
