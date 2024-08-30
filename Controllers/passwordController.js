@@ -60,7 +60,11 @@ const sendForgotPasswordLink = async(req , res) => {
       }
     });
 
-    res.status(200).json({message: "Link for reset your password has been send to your email"})
+    res.status(200).json({
+      message: "Link for reset your password has been send to your email",
+      token,
+      userId: user._id
+    });
 
   } catch (err) {
     console.log("error sendForgotPasswordLink: " , err)
