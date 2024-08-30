@@ -11,7 +11,7 @@ passport.use("googleRegister" , new GoogleStratgy({
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CLIENT_URL_REGISTER
 },
-  async(accessToken , refreshToken , profile , done) => {
+  async(accessToken1 , refreshToken1 , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(user){
@@ -36,12 +36,9 @@ passport.use("googleRegister" , new GoogleStratgy({
       });
       await user.save();
 
-      const token = await jwt.sign({
-        id: user._id,
-        isAdmin: user.isAdmin
-      }, process.env.JWT_SECRET_KEY , { expiresIn: "1d"});
+
       
-      return done(null , {user , token});
+      return done(null , { user });
     } catch (err) {
       done(err , false)
     }

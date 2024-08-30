@@ -2,11 +2,12 @@ const express = require("express");
 const {
   registerController,
   loginController,
-  registerControllerView,
   verifyEmail,
-  loginControllerView,
+  verifyRefreshToken,
+  logoutController
 } = require("../Controllers/authController");
 const passport = require("passport");
+const { createToken, refreshToken } = require("../config/jwt");
 const router = express.Router();
 
 
@@ -16,8 +17,14 @@ router.route("/register")
 router.route("/verify")
                       .post(verifyEmail);
 
+router.route("/refresh-token")
+                      .post(verifyRefreshToken);
+
 router.route("/login")
                       .post(loginController)
+
+router.route("/logout")
+                      .post(logoutController)
 
 
 router.get("/google/register" , passport.authenticate("googleRegister" , {
@@ -38,12 +45,6 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
 
 
 
-
-
-
-
-
-
 router.get("/google/login" , passport.authenticate("googleLogin" , {
   scope: ["profile" , "email"]
 }));
@@ -56,7 +57,15 @@ router.get("/google/login/callback" , (req ,res ,next) => {
     if(!user){
       return res.status(400).json({message: "No account found for this Google account"})
     }
-    res.status(200).json({message: "login successfully" , user })
+    const accessToken = createToken(user); 
+    const refreshToken = refreshToken(user); 
+
+    res.cookie("refreshToken", refreshToken , {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+    res.status(200).json({message: "login successfully" , user ,accessToken })
   })(req , res , next)
 });
 

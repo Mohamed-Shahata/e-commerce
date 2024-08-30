@@ -6,6 +6,7 @@ const {
 const bcryptjs = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const { sendVerificationCode } = require("../utils/sendEmail.js");
+const { createToken, refreshToken } = require("../config/jwt.js");
 
 
 /**
@@ -86,12 +87,10 @@ const verifyEmail = async(req , res) => {
     user.vereificationCode = null;
     user.save();
 
-    const token = await jwt.sign({
-      id: user._id,
-      isAdmin: user.isAdmin
-    } , process.env.JWT_SECRET_KEY , {expiresIn: "1d"});
+    const accessToken = createToken(user);
+    const refreshToken = refreshToken(user);
 
-    return res.status(401).json({message: "verify successfully" , user , token})
+    return res.status(200).json({message: "verify successfully" , user , accessToken , refreshToken})
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -142,26 +141,62 @@ const loginController = async(req , res) => {
     }
     const comparePassword = await bcryptjs.compare(password , user.password);
 
-    if(email !== user.email){
+    if(email !== user.email || comparePassword == false){
       return res.status(401).json({message: "email or password is worng"})
     }
-    if(comparePassword == false){
-      return res.status(401).json({message: "email or password is worng"})
-    }
-    const token = await jwt.sign({
-      id: user._id,
-      isAdmin: user.isAdmin
-    } , process.env.JWT_SECRET_KEY , {expiresIn: "1d"});
 
-    res.status(200).json({message: "login successfully" , user , token})
+    const accessToken = createToken(user);
+    const refreshToken = refreshToken(user);
+
+    user.refreshToken = refreshToken;
+    await user.save();
+
+    res.cookie("refreshToken", refreshToken , {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    res.status(200).json({message: "login successfully" , user , accessToken})
   } catch (err) {
     console.log("Error from Login: " , err);
     res.status(500).json({ error: "Server error" });
   }
 };
 
+const verifyRefreshToken = async(req , res) => {
+  const { refreshToken } = req.cookies;
+  if(!refreshToken){
+    return res.status(401);
+  };
+  const user = await User.findOne({ refreshToken });
+  if(!user){
+    return res.status(403);
+  };
+
+  jwt.verify(refreshToken, process.env.JWT_SECRET_KEY, (err , decoded) => {
+    if(err){
+      return res.status(403)
+    }
+    const accessToken = createToken(user);
+    res.status(200).json({ accessToken });
+  })
+};
+
+const logoutController = async(req , res) => {
+  const user = await User.findOne({refreshToken: req.cookies.refreshToken})
+  if(user){
+    user.refreshToken = null;
+    await user.save();
+  };
+  res.clearCookie("refreshToken");
+  res.status(204);
+}
+
 module.exports = {
   registerController,
   loginController,
+  logoutController,
   verifyEmail,
+  verifyRefreshToken
 };

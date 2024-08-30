@@ -12,6 +12,7 @@ const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const productsRoute = require("./Router/productRoute.js");
 const payment = require("./Router/paymentRoute.js");
+const cookieParser = require("cookie-parser");
 
 
 connectDB();
@@ -22,6 +23,7 @@ app.use(compression());
 app.use(express.json({limit: "50mb"}));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname , "images")));
+app.use(cookieParser());
 
 //setting db/passport
 app.use(passport.initialize())
