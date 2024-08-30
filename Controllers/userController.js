@@ -50,7 +50,7 @@ const updateUser = async(req , res) => {
     return res.status(400).json({message: error.details[0].message})
   }
   const id = req.params.id;
-  const { fistName , lastName , password , email } = req.body;
+  const { firstName , lastName , password , email } = req.body;
   try {
     const user = await User.findById(id);
     if(!user){
@@ -74,7 +74,7 @@ const updateUser = async(req , res) => {
       hashPassword = await bcryptjs.hash(password , salt);
     }
     const userUpdate = await User.findByIdAndUpdate(user._id , {$set:{
-      fistName,
+      firstName,
       lastName,
       password: hashPassword,
       email,
