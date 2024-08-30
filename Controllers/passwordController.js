@@ -3,20 +3,6 @@ const jwt = require("jsonwebtoken");
 const nodemailer = require("nodemailer");
 const bcryptjs = require("bcryptjs");
 
-/**
- * @description Forgot Password View
- * @route       /password/forgot-password
- * @method      GET
- * @access      public
- */
-const forgotPasswordView = (req , res) => {
-  try {
-    res.render("password_pages/forgot_password");
-  } catch (err) {
-    console.log("error forgotPasswordView: " , err)
-    res.status(500).json({error: "Server error"});
-  }
-};
 
 /**
  * @description Send Forgot Password Link
@@ -43,8 +29,7 @@ const sendForgotPasswordLink = async(req , res) => {
       email: user.email
     }, secret , {expiresIn: "10m"});
 
-    const PORT = process.env.PORT;
-    const link = `http://localhost:${PORT || 3000}/password/rest-password/${user._id}/${token}`;
+    const link = `https://e-commerce-production-2d41.up.railway.app/password/rest-password/${user._id}/${token}`;
 
     const trnasporter = nodemailer.createTransport({
       service: "gmail",
@@ -75,7 +60,7 @@ const sendForgotPasswordLink = async(req , res) => {
       }
     });
 
-    res.render("password_pages/send_link");
+    res.status(200).json({message: "Link for reset your password has been send to your email"})
 
   } catch (err) {
     console.log("error sendForgotPasswordLink: " , err)
@@ -83,29 +68,6 @@ const sendForgotPasswordLink = async(req , res) => {
   }
 };
 
-/**
- * @description Rest Password View
- * @route       /password/rest-password/:id/:token
- * @method      GET
- * @access      public
- */
-// 
-const getResetPasswordView = async(req , res) => {
-  const id = req.params.id;
-  const user = await User.findById(id);
-  if(!user){
-    return res.status(404).json({message: "User not found"});
-  }
-  const secret = process.env.JWT_SECRET_KEY + user.password;
-
-  try {
-    jwt.verify(req.params.token , secret);
-    res.render("password_pages/rest_password" , {email: user.email});
-  } catch (err) {
-    console.log("error getResetPasswordView: " , err);
-    res.status(500).json({error: "Server error"});
-  }
-};
 
 /**
  * @description Rest Password
@@ -127,7 +89,7 @@ const resetThePassword = async(req , res) => {
     user.password = await bcryptjs.hash(req.body.password , salt);
     await user.save();
 
-    res.render("password_pages/success-password");
+    res.status(200).json({message: "Rest password successfully"})
   } catch (err) {
     console.log("error resetThePassword: " , err);
     res.status(500).json({error: "Server error"});
@@ -136,8 +98,6 @@ const resetThePassword = async(req , res) => {
 
 
 module.exports = {
-  forgotPasswordView,
   sendForgotPasswordLink,
-  getResetPasswordView,
   resetThePassword
 };
