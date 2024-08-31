@@ -72,7 +72,7 @@ router.get("/google/login/callback" , (req ,res ,next) => {
     const accessToken = createToken(user);
 
     res.status(200).json({message: "login successfully" , user , accessToken})
-  })
+  })(req , res , next)
 });
 
 module.exports = router;
