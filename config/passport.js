@@ -43,7 +43,7 @@ passport.use("googleRegister" , new GoogleStratgy({
   }
 ));
 
-passport.use("googleLogin", new GoogleStrategy({
+passport.use("googleLogin", new GoogleStratgy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CLIENT_URL_LOGIN
