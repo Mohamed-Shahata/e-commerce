@@ -8,7 +8,7 @@ const {
 } = require("../Controllers/authController");
 const passport = require("passport");
 const { createToken, refreshToken } = require("../config/jwt");
-const { verifyToken , verifyTokenAndAutherization } = require("../middlewares/verifyToken.js");
+const { verifyTokenAndAutherization } = require("../middlewares/verifyToken.js");
 const router = express.Router();
 
 
