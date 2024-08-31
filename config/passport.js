@@ -10,7 +10,7 @@ passport.use("googleRegister" , new GoogleStratgy({
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CLIENT_URL_REGISTER
 },
-  async(accessToken , refreshToken , profile , done) => {
+  async(request , accessToken , refreshToken , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(user){
@@ -48,13 +48,25 @@ passport.use("googleLogin", new GoogleStratgy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.CLIENT_URL_LOGIN
 },
-  async(accessToken , refreshToken , profile , done) => {
+  async(request , accessToken , refreshToken , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(!user){
         return done(null , false , {message: "No account found for this Google account"})
       }
-      return done(null , user )
+
+      if(refreshToken){
+        user.refreshToken = refreshToken;
+        await user.save();
+
+        request.res.cookie("refreshToken" , refreshToken ,{
+          httpOnly: true,
+          secure: true,
+          sameSite: 'Strict',
+        })
+      }
+
+      return done(null , {user , accessToken} )
     } catch (err) {
       done(err , false)
     }
