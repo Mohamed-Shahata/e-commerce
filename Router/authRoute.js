@@ -61,18 +61,18 @@ router.get("/google/login" , passport.authenticate("googleLogin" , {
 }));
 
 router.get("/google/login/callback" , (req ,res ,next) => {
-  passport.authenticate("googleLogin" ,{ session: false } , (err , user , info) => {
-    if(err){
-      return next(err);
-    }
-    if(!user){
+  passport.authenticate("googleLogin" ,{ session: false } , (req , res ) => {
+    
+    if(!req.user){
       return res.status(400).json({message: "No account found for this Google account"})
     }
+
+    const user = req.user;
 
     const accessToken = createToken(user);
 
     res.status(200).json({message: "login successfully" , user , accessToken})
-  })(req , res , next)
+  })
 });
 
 module.exports = router;
