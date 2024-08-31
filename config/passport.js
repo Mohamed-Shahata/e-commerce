@@ -44,39 +44,32 @@ passport.use("googleRegister" , new GoogleStratgy({
 ));
 
 passport.use("googleLogin", new GoogleStratgy({
-  clientID: process.env.CLIENT_ID,
-  clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: process.env.CLIENT_URL_LOGIN
+    clientID: process.env.CLIENT_ID,
+    clientSecret: process.env.CLIENT_SECRET,
+    callbackURL: process.env.CLIENT_URL_LOGIN
 },
-async (request, accessToken, refreshToken, profile, done) => {
-  try {
-    let user = await User.findOne({ email: profile.emails[0].value });
-    if (!user) {
-      return done(null, false, { message: "No account found for this Google account" });
-    }
-
-    if (refreshToken) {
-      // تأكد من تخزين السلسلة النصية فقط من refreshToken
-      if (typeof refreshToken === 'object') {
-        // تحويل الكائن إلى سلسلة JSON أو استخراج حقل معين
-        user.refreshToken = JSON.stringify(refreshToken); // أو يمكنك استخدام refreshToken.token أو أي حقل مناسب آخر
-      } else {
-        user.refreshToken = refreshToken;
+  async(request , accessToken , refreshToken , profile , done) => {
+    try {
+      let user = await User.findOne({email: profile.emails[0].value});
+      if(!user){
+        return done(null , false , {message: "No account found for this Google account"})
       }
 
-      await user.save();
+      if(refreshToken){
+        user.refreshToken = token.access_token; // حيث `token` هو الكائن الذي يحتوي على الحقول
 
-      // تعيين الكوكيز مع refreshToken
-      request.res.cookie("refreshToken", user.refreshToken, {
-        httpOnly: true,
-        secure: true,
-        sameSite: 'Strict',
-      });
+        await user.save();
+
+        request.res.cookie("refreshToken" , refreshToken ,{
+          httpOnly: true,
+          secure: true,
+          sameSite: 'Strict',
+        })
+      }
+
+      return done(null , {user , accessToken} )
+    } catch (err) {
+      done(err , false)
     }
-
-    return done(null, { user, accessToken });
-  } catch (err) {
-    done(err, false);
   }
-}
-));
+))
