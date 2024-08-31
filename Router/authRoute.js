@@ -7,7 +7,7 @@ const {
   logoutController
 } = require("../Controllers/authController");
 const passport = require("passport");
-const { createToken } = require("../config/jwt");
+const { createToken, refreshToken } = require("../config/jwt");
 const router = express.Router();
 
 
@@ -38,8 +38,19 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     if(req.authInfo && req.authInfo.message === "User already exists"){
       return res.status(400).json({message: "User already exists"})
     }
-
     const accessToken = createToken(user);
+    const refreshToken = refreshToken(user);
+
+    user.refreshToken = refreshToken;
+    user.save();
+
+    res.cookie("refreshToken", refreshToken , {
+      httpOnly: true,
+      secure: true,
+      sameSite: "Strict",
+    });
+
+    
 
     res.status(200).json({message: "register successfully" , user , accessToken})
   });

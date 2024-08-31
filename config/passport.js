@@ -34,6 +34,7 @@ passport.use("googleRegister" , new GoogleStratgy({
         registed: true,
         vereificationCode: null
       });
+      
       await user.save();
     
       return done(null , { user });
