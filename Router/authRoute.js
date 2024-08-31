@@ -82,6 +82,8 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
         sameSite: 'Strict',
       });
 
+      console.log(req.cookies.refreshToken);
+
 
       res.status(200).json({ message: 'Login successfully', user, accessToken });
     })
