@@ -3,7 +3,6 @@ const GoogleStratgy = require("passport-google-oauth20").Strategy;
 const { User } = require("../Model/User.js");
 const bcryptjs = require("bcryptjs");
 const crypto = require("crypto");
-const jwt = require("jsonwebtoken");
 
 
 passport.use("googleRegister" , new GoogleStratgy({

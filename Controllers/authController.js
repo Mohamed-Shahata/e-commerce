@@ -182,7 +182,7 @@ const verifyRefreshToken = async(req , res) => {
     return res.status(403);
   };
 
-  jwt.verify(refreshToken, process.env.JWT_SECRET_KEY, (err , decoded) => {
+  jwt.verify(refreshToken, process.env.JWT_SECRET_KEY_REFRESH, (err , decoded) => {
     if(err){
       return res.status(403)
     }
