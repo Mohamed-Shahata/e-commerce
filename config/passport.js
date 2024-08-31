@@ -35,13 +35,8 @@ passport.use("googleRegister" , new GoogleStratgy({
         vereificationCode: null
       });
       await user.save();
-
-      const token = await jwt.sign({
-        id: user._id,
-        isAdmin: user.isAdmin
-      }, process.env.JWT_SECRET_KEY , { expiresIn: "1d"});
-      
-      return done(null , {user , token});
+    
+      return done(null , { user });
     } catch (err) {
       done(err , false)
     }
