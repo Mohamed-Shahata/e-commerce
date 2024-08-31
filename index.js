@@ -25,6 +25,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname , "images")));
 app.use(cookieParser());
 
+
 //setting db/passport
 app.use(passport.initialize())
 

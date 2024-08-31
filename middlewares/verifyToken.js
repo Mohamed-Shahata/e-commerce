@@ -33,7 +33,7 @@ const verifyTokenAndAdmin = (req , res , next) => {
 
 const verifyTokenAndAutherization = (req , res , next) => {
   verifyToken(req , res , () => {
-    if(req.user.id === req.params.id || req.user.isAdmin){
+    if(req.user._id === req.params.id || req.user.isAdmin){
       next();
     }else{
       return res.status(403).json({messege: "You Are Not Allowed"});

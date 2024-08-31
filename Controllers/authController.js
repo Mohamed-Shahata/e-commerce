@@ -83,14 +83,22 @@ const verifyEmail = async(req , res) => {
       return res.status(401).json({message: "The code is worng"})
     }
 
+    const accessToken = createToken(user);
+    const createRefreshToken = refreshToken(user);
+
     user.registed = true;
     user.vereificationCode = null;
-    user.save();
 
-    const accessToken = createToken(user);
-    const refreshToken = refreshToken(user);
+    user.refreshToken = createRefreshToken;
+    await user.save();
 
-    return res.status(200).json({message: "verify successfully" , user , accessToken , refreshToken})
+    res.cookie("refreshToken", createRefreshToken , {
+      httpOnly: true,
+      secure: false,
+      sameSite: "Strict",
+    });
+
+    return res.status(200).json({message: "verify successfully" , user , accessToken})
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -146,14 +154,14 @@ const loginController = async(req , res) => {
     }
 
     const accessToken = createToken(user);
-    const refreshToken = refreshToken(user);
+    const createRefreshToken = refreshToken(user);
 
-    user.refreshToken = refreshToken;
+    user.refreshToken = createRefreshToken;
     await user.save();
 
-    res.cookie("refreshToken", refreshToken , {
+    res.cookie("refreshToken", createRefreshToken , {
       httpOnly: true,
-      secure: true,
+      secure: false,
       sameSite: "Strict",
     });
 
@@ -190,7 +198,7 @@ const logoutController = async(req , res) => {
     await user.save();
   };
   res.clearCookie("refreshToken");
-  res.status(204);
+  res.status(200).json({message: "logout successfully"});
 }
 
 module.exports = {

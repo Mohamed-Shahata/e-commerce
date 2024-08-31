@@ -38,7 +38,13 @@ const ProductSchema = new mongoose.Schema({
   category:{
     type: String,
     required: true,
-    enum: ["tv" , "clothes" , "shoes" , "laptop" , "phone"]
+    enum: [
+      "Clothes","Mackup","Bags","Shoes","Accessories","Electronics",
+      "kids'Toys","Video Games","Furniture","Car Accessories",
+      "Cleaning Products","Personal Care Products","School Supplies",
+      "Pet Supplies","Arts & Crafts","Travel & Luggage","Tech & Gadgets",
+      "Sports & Outdoors","Perfumes","Books"
+    ]
   },
   reviews:[
     {
