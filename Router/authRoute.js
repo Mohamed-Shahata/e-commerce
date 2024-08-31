@@ -50,12 +50,12 @@ router.route("/logout")
 
 
 
-router.get("/google" , passport.authenticate("googleLogin" , {
+router.get("/google" , passport.authenticate({
   scope: ["profile" , "email"]
 }));
 
 router.get("/google/callback" , (req ,res ,next) => {
-  passport.authenticate("googleLogin" ,{ session: false } , (err , user , info) => {
+  passport.authenticate({ session: false } , (err , user , info) => {
     if(err){
       return next(err);
     }

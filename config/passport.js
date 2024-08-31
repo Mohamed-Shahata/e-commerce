@@ -48,7 +48,7 @@ const jwt = require("jsonwebtoken");
 //   }
 // ));
 
-passport.use("googleLogin", new GoogleStratgy({
+passport.use(new GoogleStratgy({
     clientID: process.env.CLIENT_ID,
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.CLIENT_URL_LOGIN
