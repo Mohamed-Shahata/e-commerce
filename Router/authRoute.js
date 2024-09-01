@@ -86,7 +86,8 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
 
       res.cookie("refreshToken", createRefreshToken ,{
         httpOnly: true,
-        sameSite: "lax"
+        secure: true,
+        sameSite: "strict"
       })
 
       console.log(req.cookies);
