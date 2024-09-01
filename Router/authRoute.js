@@ -68,19 +68,28 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       }
 
       const user = req.user;
-      console.log(user + "\n" + req.refreshToken + "\n" + req.accessToken)
-
-      user.refreshToken = req.refreshToken
+      if(!user){
+        return res.status(404).json({message: "User not found"});
+      }
+      user.refreshToken = req.authInfo.refreshToken
       await user.save();
 
-      res.cookie("refreshToken", req.refreshToken ,{
+      const accessToken = req.authInfo.accessToken
+      const createRefreshToken = req.authInfo.refreshToken
+      console.log(user + "\n" + createRefreshToken + "\n" + accessToken)
+
+      
+
+      res.cookie("refreshToken", createRefreshToken ,{
         httpOnly: true,
         secure: true,
         sameSite: "strict"
       })
 
+      console.log(req.cookies);
 
-      res.status(200).json({ message: 'Login successfully', user, accessToken:req.accessToken });
+
+      res.status(200).json({ message: 'Login successfully', user, accessToken });
     })
   
   module.exports = router;

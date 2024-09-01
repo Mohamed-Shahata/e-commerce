@@ -55,7 +55,7 @@ passport.use("googleLogin", new GoogleStratgy({
         return done(null , false , {message: "No account found for this Google account"})
       }
 
-      return done(null , {user , accessToken , refreshToken} )
+      return done(null , user ,{ accessToken , refreshToken} )
     } catch (err) {
       done(err , false)
     }
