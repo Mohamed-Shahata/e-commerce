@@ -59,6 +59,8 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
 
   router.get('/google/login', passport.authenticate('googleLogin', {
     scope: ['profile', 'email'],
+    accessType: 'offline',
+    prompt: 'consent'
   }));
   
   router.get('/google/login/callback',passport.authenticate('googleLogin', { session: false }), 
@@ -77,6 +79,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       const accessToken = req.authInfo.accessToken
       const createRefreshToken = req.authInfo.refreshToken
       console.log(user + "\n" + createRefreshToken + "\n" + accessToken)
+      console.log("\n" + req.authInfo);
 
       
 
