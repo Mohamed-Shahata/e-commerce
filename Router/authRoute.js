@@ -68,7 +68,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       }
 
       const user = req.user;
-      console.log(user + "\n" + req.refreshToken + "\n" + )
+      console.log(user + "\n" + req.refreshToken + "\n" + req.accessToken)
 
       user.refreshToken = req.refreshToken
       await user.save();
