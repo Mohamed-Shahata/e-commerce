@@ -93,6 +93,8 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       console.log(req.cookies);
       console.log("RefreshToken: " + req.cookies.refreshToken);
 
+      res.redirect("/")
+
 
       res.status(200).json({ message: 'Login successfully', user, accessToken });
     })
