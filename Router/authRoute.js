@@ -95,6 +95,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
 
 
       res.status(200).json({ message: 'Login successfully', user, accessToken });
+      res.redirect("register/home");
     })
   
   module.exports = router;
