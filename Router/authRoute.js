@@ -50,7 +50,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     res.cookie("refreshToken", createRefreshToken , {
       httpOnly: true,
       secure: true,
-      sameSite: "Strict",
+      sameSite: "strict",
     });
 
     res.status(200).json({message: "register successfully" , user , accessToken})
@@ -69,9 +69,14 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
 
       const user = req.user;
 
+      user.refreshToken = req.refreshToken
+      await user.save();
 
-      console.log(req.cookies.refreshToken);
-      console.log(user);
+      res.cookie("refreshToken", req.refreshToken ,{
+        httpOnly: true,
+        secure: true,
+        sameSite: "strict"
+      })
 
 
       res.status(200).json({ message: 'Login successfully', user, accessToken });

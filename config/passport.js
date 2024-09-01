@@ -48,26 +48,14 @@ passport.use("googleLogin", new GoogleStratgy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.CLIENT_URL_LOGIN
 },
-  async(request , accessToken , refreshToken , profile , done) => {
+  async(accessToken , refreshToken , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(!user){
         return done(null , false , {message: "No account found for this Google account"})
       }
 
-      if(refreshToken){
-        user.refreshToken = token.access_token; // حيث `token` هو الكائن الذي يحتوي على الحقول
-
-        await user.save();
-
-        request.res.cookie("refreshToken" , refreshToken ,{
-          httpOnly: true,
-          secure: true,
-          sameSite: 'Strict',
-        })
-      }
-
-      return done(null , {user , accessToken} )
+      return done(null , {user , accessToken , refreshToken} )
     } catch (err) {
       done(err , false)
     }
