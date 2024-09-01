@@ -10,15 +10,13 @@ passport.use("googleRegister" , new GoogleStratgy({
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CLIENT_URL_REGISTER
 },
-  async(request , accessToken , refreshToken , profile , done) => {
+  async(accessToken , refreshToken , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(user){
         return done(null , user , {message: "User already exists"})
       }
-
       const password = crypto.randomBytes(16).toString("hex");
-
       const firstName = profile.name.givenName || "";
       const lastName = profile.name.familyName || "";
 
@@ -33,10 +31,9 @@ passport.use("googleRegister" , new GoogleStratgy({
         registed: true,
         vereificationCode: null
       });
-      
       await user.save();
-    
-      return done(null , user);
+
+      return done(null , user ,{ accessToken , refreshToken});
     } catch (err) {
       done(err , false)
     }
@@ -55,7 +52,7 @@ passport.use("googleLogin", new GoogleStratgy({
         return done(null , false , {message: "No account found for this Google account"})
       }
 
-      return done(null , user ,{ accessToken , refreshToken} )
+      return done(null , user ,{ accessToken , refreshToken});
     } catch (err) {
       done(err , false)
     }

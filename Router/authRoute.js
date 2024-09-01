@@ -29,29 +29,33 @@ router.route("/logout")
 
 
 router.get("/google/register" , passport.authenticate("googleRegister" , {
-  scope: ["profile" , "email"]
+  scope: ["profile" , "email"],
+  accessType: 'offline',
+  prompt: 'consent'
 }));
 
 router.get("/google/register/callback" , passport.authenticate("googleRegister" ,
   { session: false }
 ) , 
-  (req , res) => {
+  async(req , res) => {
     if(req.authInfo && req.authInfo.message === "User already exists"){
       return res.status(400).json({message: "User already exists"})
     }
     const user = req.user;
+    if(!user){
+      return res.status(404).json({message: "User authentication failed"});
+    }
+    user.refreshToken = req.authInfo.refreshToken
+    await user.save();
 
-    const accessToken = createToken(user);
-    const createRefreshToken = refreshToken(user);
+    const accessToken = req.authInfo.accessToken
+    const createRefreshToken = req.authInfo.refreshToken
 
-    user.refreshToken = createRefreshToken;
-    user.save();
-
-    res.cookie("refreshToken", createRefreshToken , {
+    res.cookie("refreshToken", createRefreshToken ,{
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
-    });
+      sameSite: "strict"
+    })
 
     res.status(200).json({message: "register successfully" , user , accessToken})
   });
