@@ -94,9 +94,10 @@ const verifyEmail = async(req , res) => {
 
     res.cookie("refreshToken", createRefreshToken , {
       httpOnly: true,
-      secure: false,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "strict",
     });
+
 
     return res.status(200).json({message: "verify successfully" , user , accessToken})
   
@@ -161,8 +162,8 @@ const loginController = async(req , res) => {
 
     res.cookie("refreshToken", createRefreshToken , {
       httpOnly: true,
-      secure: false,
-      sameSite: "Strict",
+      secure: true,
+      sameSite: "strict",
     });
 
     res.status(200).json({message: "login successfully" , user , accessToken})

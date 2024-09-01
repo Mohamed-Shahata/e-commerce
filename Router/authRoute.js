@@ -68,6 +68,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       }
 
       const user = req.user;
+      console.log(user + "\n" + req.refreshToken + "\n" + )
 
       user.refreshToken = req.refreshToken
       await user.save();
@@ -79,7 +80,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       })
 
 
-      res.status(200).json({ message: 'Login successfully', user, accessToken });
+      res.status(200).json({ message: 'Login successfully', user, accessToken:req.accessToken });
     })
   
   module.exports = router;
