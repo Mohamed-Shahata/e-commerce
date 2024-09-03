@@ -44,10 +44,8 @@ const ProductSchema = new mongoose.Schema({
     required: true,
     enum: [
       "Clothes","Electronics","Shoes","Accessories",
-      "kids'Toys","Video Games","Furniture","Car Accessories",
-      "Cleaning Products","Personal Care Products","School Supplies",
-      "Pet Supplies","Arts & Crafts","Travel & Luggage","Tech & Gadgets",
-      "Sports & Outdoors","Perfumes","Books","Mackup"
+      "Furniture","Sports","Perfumes","Books","Mackup",
+      "Bags"
     ],
     
   },
