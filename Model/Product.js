@@ -82,7 +82,7 @@ const ProductSchema = new mongoose.Schema({
 });
 
 const clothesSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Men","Women","Children"
@@ -128,7 +128,7 @@ const clothesSchema = new mongoose.Schema({
 });
 
 const electronicsSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Tablets","Laptops","Phones","Headphones"
@@ -158,7 +158,7 @@ const electronicsSchema = new mongoose.Schema({
 });
 
 const shoesSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Men","Women","Children"
@@ -193,11 +193,17 @@ const shoesSchema = new mongoose.Schema({
     enum:[
       "Casual","Formal","Party","Gym",
     ],
+  },
+  brand:{
+    type: String,
+    enum:[
+      "Nike","Puma","Converse","Clarks","Dior","Adidas","Reebok"
+    ],
   }
 });
 
 const makeupSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Face","Eyes","Lips","Nails"
@@ -234,7 +240,7 @@ const makeupSchema = new mongoose.Schema({
 });
 
 const bagsSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Men","Women","Children"
@@ -265,7 +271,7 @@ const bagsSchema = new mongoose.Schema({
 });
 
 const sportsSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Sports equipment","Sports clothing","camping tools"
@@ -302,7 +308,7 @@ const sportsSchema = new mongoose.Schema({
 });
 
 const perfumesSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Men","Women","Men & Women"
@@ -336,7 +342,7 @@ const perfumesSchema = new mongoose.Schema({
 });
 
 const booksSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Novels","Educational","Children","Biography"
@@ -365,7 +371,7 @@ const booksSchema = new mongoose.Schema({
 });
 
 const accessoriesSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Men","Women","Children"
@@ -393,7 +399,7 @@ const accessoriesSchema = new mongoose.Schema({
 });
 
 const furnitureSchema = new mongoose.Schema({
-  category:{
+  subCategory:{
     type: String,
     enum:[
       "Bedrooms","Kitchens","Offices","Living rooms"

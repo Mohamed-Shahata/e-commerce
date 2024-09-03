@@ -132,6 +132,7 @@ const createProduct = async(req , res) => {
     switch (category) {
       case "Clothes":
         product = new Clothes({
+          subCategory,
           quantity,
           name,
           description,
@@ -143,12 +144,14 @@ const createProduct = async(req , res) => {
           size,
           style,
           colors,
-          type
+          type,
+          brand
         })
         await product.save();
         break;
       case "Electronics":
         product = new Electronics({
+          subCategory,
           quantity,
           name,
           description,
@@ -158,11 +161,13 @@ const createProduct = async(req , res) => {
           category,
           images,
           colors,
-          type
+          brand,
+          warranty
         });
         await product.save();
       case "Shoes":
         product = new Shoes({
+          subCategory,
           quantity,
           name,
           description,
@@ -174,7 +179,8 @@ const createProduct = async(req , res) => {
           size,
           style,
           colors,
-          type
+          type,
+          brand
         })
         await product.save();
       default:
