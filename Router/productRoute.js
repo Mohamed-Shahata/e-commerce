@@ -19,7 +19,7 @@ const router = express.Router();
 
 router.route("/")
                 .get( getAllProducts )
-                .post(verifyToken , upload.array("images") , createProduct )
+                .post(verifyTokenAndAdmin , upload.array("images") , createProduct )
 
 router.route("/:id")
                   .get(verifyToken , getSingleProducts)

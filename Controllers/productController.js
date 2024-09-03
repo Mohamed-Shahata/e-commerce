@@ -9,7 +9,9 @@ const cloudinary = require("cloudinary").v2;
  */
 const getAllProducts = async(req , res) => {
   const { 
-    pageNum = 1, category, size, type, colors, style, minPrice, maxPrice
+    pageNum = 1, category, size, type, colors, style, minPrice, maxPrice,
+    brand, subCategory, warranty, Skin_type, Activity,
+    material, Capacity, Smells, language, authors
   } = req.query;
   try {
     const pageProducts = 5;
@@ -26,6 +28,13 @@ const getAllProducts = async(req , res) => {
       case "Shoes":
       case "Clothes":
       case "Electronics":
+      case "Accessories":
+      case "Furniture":
+      case "Sports":
+      case "Perfumes":
+      case "Books":
+      case "Mackup":
+      case "Bags":
         filters.category = category;
         if(minPrice && maxPrice){
           filters.$or = [
@@ -41,14 +50,14 @@ const getAllProducts = async(req , res) => {
             },
             {
               $and:[
-                { discount: {$exists: false }},
+                { discount: {$lte: 0  }},
                 { price: {
                   ...(+minPrice && { $gte: +minPrice}),
                   ...(+maxPrice && { $lte: +maxPrice})
                   }
                 }
               ]
-            }
+            },
           ]
         }
         if(size){
@@ -62,6 +71,36 @@ const getAllProducts = async(req , res) => {
         }
         if(style){
           filters.style = style;
+        }
+        if(brand){
+          filters.brand = brand;
+        }
+        if(subCategory){
+          filters.subCategory = subCategory;
+        }
+        if(warranty){
+          filters.warranty = warranty;
+        }
+        if(Skin_type){
+          filters.Skin_type = Skin_type;
+        }
+        if(Activity){
+          filters.Activity = Activity;
+        }
+        if(material){
+          filters.material = material;
+        }
+        if(Capacity){
+          filters.Capacity = Capacity;
+        }
+        if(Smells){
+          filters.Smells = Smells;
+        }
+        if(language){
+          filters.language = language;
+        }
+        if(authors){
+          filters.authors = authors;
         }
         products = await Product.find(filters).skip((pageNum - 1) * pageProducts).limit(pageProducts);
         return res.status(200).json({ products });
@@ -127,7 +166,7 @@ const createProduct = async(req , res) => {
     const { 
       size , colors , type , style , brand , subCategory , warranty,
       Skin_type , Activity , material , Capacity , Smells , language,
-      author
+      authors
     } = req.body;
     switch (category) {
       case "Clothes":
@@ -185,9 +224,130 @@ const createProduct = async(req , res) => {
         })
         await product.save();
         break;
-      default:
-        // res.status(400).json({message: "Invalid category"});
+      case "Mackup":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          colors,
+          type,
+          brand,
+          Skin_type
+        })
+        await product.save();
         break;
+      case "Books":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          type,
+          language,
+          authors
+        })
+        await product.save();
+        break;
+      case "Perfumes":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          type,
+          brand,
+          Capacity,
+          Smells
+        })
+        await product.save();
+        break;
+      case "Sports":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          colors,
+          brand,
+          Activity,
+          material
+        })
+        await product.save();
+        break;
+      case "Furniture":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          size,
+          colors,
+          type,
+        })
+        await product.save();
+        break;
+      case "Bags":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          colors,
+          type,
+          brand
+        })
+        await product.save();
+        break;
+      case "Accessories":
+        product = new Shoes({
+          name,
+          description,
+          images,
+          price,
+          discount,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          quantity,
+          category,
+          subCategory,
+          material,
+          type,
+          brand
+        })
+        await product.save();
+        break;
+      default:
+        return res.status(400).json({message: "Invalid category"});
     }
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
@@ -203,21 +363,76 @@ const createProduct = async(req , res) => {
  * @access      private
  */
 const updateProduct = async(req , res) => {
-  const { error } = ValidationUpdateProduct(req.body);
+  const { 
+    name, price, category, description,quantity,offer,discount,
+    size , colors , type , style , brand , subCategory , warranty,
+    Skin_type , Activity , material , Capacity , Smells , language,
+    authors
+  } = req.body;
+  const { error } = ValidationUpdateProduct({
+    name, price, category, description,quantity,discount
+  });
   if(error){
     return res.status(400).json({message: error.details[0].message})
   }
   const id = req.params.id;
-  const { name , price , category , description } = req.body;
+
   try {
     const product = await Product.findById(id);
     if(!product){
       return res.status(404).json({message: "Product not found"});
     }
+
+    if(size){
+      product.size.push(size || product.size);
+    }
+    if(type){
+      product.type = type || product.type;
+    }
+    if(colors){
+      product.colors.push(colors || product.colors);
+    }
+    if(style){
+      product.style = style || product.style;
+    }
+    if(brand){
+      product.brand = brand || product.brand;
+    }
+    if(subCategory){
+      product.subCategory = subCategory || product.subCategory;
+    }
+    if(warranty){
+      product.warranty = warranty || product.warranty;
+    }
+    if(Skin_type){
+      product.Skin_type = Skin_type || product.Skin_type;
+    }
+    if(Activity){
+      product.Activity = Activity || product.Activity;
+    }
+    if(material){
+      product.material = material || product.material;
+    }
+    if(Capacity){
+      product.Capacity = Capacity || product.Capacity;
+    }
+    if(Smells){
+      product.Smells = Smells || product.Smells;
+    }
+    if(language){
+      product.language = language || product.language;
+    }
+    if(authors){
+      product.authors = authors || product.authors;
+    }
+
     product.name = name || product.name;
     product.price = price || product.price;
     product.category = category || product.category;
     product.description = description || product.description;
+    product.discount = discount || product.discount;
+    product.quantity = quantity || product.quantity;
+    product.offer = offer || product.offer;
     let images = [];
     if(req.files.length !== 0){
       for(let i = 0 ; i < product.images.length; i++){

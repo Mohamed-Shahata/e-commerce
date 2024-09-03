@@ -354,7 +354,7 @@ const booksSchema = new mongoose.Schema({
       "Arabic","English","French"
     ],
   },
-  author:{
+  authors:{
     type: String,
     enum:[
       "Naguib Mahfouz","Ghassan Kanafani","Nizar Qabbani","Taha Hussein",
