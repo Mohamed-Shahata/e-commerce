@@ -165,6 +165,7 @@ const createProduct = async(req , res) => {
           warranty
         });
         await product.save();
+        break;
       case "Shoes":
         product = new Shoes({
           subCategory,
@@ -183,6 +184,7 @@ const createProduct = async(req , res) => {
           brand
         })
         await product.save();
+        break;
       default:
         // res.status(400).json({message: "Invalid category"});
         break;
