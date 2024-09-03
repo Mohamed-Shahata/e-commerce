@@ -50,7 +50,7 @@ const updateUser = async(req , res) => {
     return res.status(400).json({message: error.details[0].message})
   }
   const id = req.params.id;
-  const { firstName , lastName , password , email } = req.body;
+  const { firstName , lastName , password , email , gender } = req.body;
   try {
     const user = await User.findById(id);
     if(!user){
@@ -67,7 +67,6 @@ const updateUser = async(req , res) => {
       await user.save();
     }
   
-
     let hashPassword = user.password;
     if(password){
       const salt = await bcryptjs.genSalt(10);
@@ -78,6 +77,7 @@ const updateUser = async(req , res) => {
       lastName,
       password: hashPassword,
       email,
+      gender
     }} , { new : true }).select("-password");
 
     res.status(200).json({message: "Updated user successfully" , user: userUpdate});

@@ -16,7 +16,7 @@ const { createToken, refreshToken } = require("../config/jwt.js");
  * @access      public
  */
 const registerController = async(req , res) => {
-  const { firstName , lastName , email , password , confirmPassword } = req.body;
+  const { firstName , lastName , email , password , confirmPassword ,gender } = req.body;
   const { error } = ValidationRegisterUser({firstName , lastName , email , password});
   if(error){
     return res.status(400).json({message: error.details[0].message});
@@ -52,7 +52,8 @@ const registerController = async(req , res) => {
       lastName,
       password: hashPassword,
       email,
-      vereificationCode
+      vereificationCode,
+      gender
     });
     await user.save();
     await sendVerificationCode(email , vereificationCode);
@@ -110,20 +111,20 @@ const verifyEmail = async(req , res) => {
   }
 };
 
-// const sendNewCode = async() => {
-//   const { email } = req.body;
-//   const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
-//   try {
-//     const user = await User.findOne({ email });
-//     user.vereificationCode = vereificationCode;
-//     await user.save();
-//     await sendVerificationCode(email , vereificationCode);
-//     res.render("register/new_code" , { email });
-//   } catch (err) {
-//     console.log("Error from sendNewCode: " , err);
-//     res.status(500).json({ error: "Server error" });
-//   }
-// }
+const sendNewCode = async() => {
+  const { email } = req.body;
+  const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
+  try {
+    const user = await User.findOne({ email });
+    user.vereificationCode = vereificationCode;
+    await user.save();
+    await sendVerificationCode(email , vereificationCode);
+    res.status(200).json({message: "check your email again"})
+  } catch (err) {
+    console.log("Error from sendNewCode: " , err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
 
 
 
@@ -207,5 +208,6 @@ module.exports = {
   loginController,
   logoutController,
   verifyEmail,
-  verifyRefreshToken
+  verifyRefreshToken,
+  sendNewCode
 };

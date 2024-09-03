@@ -1,4 +1,4 @@
-const { Product, ValidationCreateProduct, ValidationUpdateProduct } = require("../Model/Product.js");
+const { Product, ValidationCreateProduct, ValidationUpdateProduct, Clothes, Electronics, Shoes } = require("../Model/Product.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -8,14 +8,68 @@ const cloudinary = require("cloudinary").v2;
  * @access      public
  */
 const getAllProducts = async(req , res) => {
-  const { pageNum } = req.query;
+  const { 
+    pageNum = 1, category, size, type, colors, style, minPrice, maxPrice
+  } = req.query;
   try {
-    const pageProducts = 12;
-    const products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
-    if(products.length === 0){
-      return res.status(200).json({message: "Not product"});
+    const pageProducts = 5;
+
+    let products;
+    if(!category){
+      products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
+      return res.status(200).json({ products });
     }
-    res.status(200).json({ products });
+
+    //filters 
+    let filters = {};
+    switch (category) {
+      case "Shoes":
+      case "Clothes":
+      case "Electronics":
+        filters.category = category;
+        if(minPrice && maxPrice){
+          filters.$or = [
+            {
+              $and:[
+                { discount: {$exists: true , $ne: 0}},
+                { newPrice: {
+                  ...(+minPrice && { $gte: +minPrice}),
+                  ...(+maxPrice && { $lte: +maxPrice})
+                  }
+                }
+              ]
+            },
+            {
+              $and:[
+                { discount: {$exists: false }},
+                { price: {
+                  ...(+minPrice && { $gte: +minPrice}),
+                  ...(+maxPrice && { $lte: +maxPrice})
+                  }
+                }
+              ]
+            }
+          ]
+        }
+        if(size){
+          filters.size = size;
+        }
+        if(type){
+          filters.type = type;
+        }
+        if(colors){
+          filters.colors = colors;
+        }
+        if(style){
+          filters.style = style;
+        }
+        products = await Product.find(filters).skip((pageNum - 1) * pageProducts).limit(pageProducts);
+        return res.status(200).json({ products });
+
+        default:
+          return res.status(404).json({message: "Category not found"});
+    }
+    
   } catch (err) {
     console.log("Error from getAllProducts: ", err);
     res.status(500).json({error: "Server error"});
@@ -49,12 +103,16 @@ const getSingleProducts = async(req , res) => {
  * @access      private
  */
 const createProduct = async(req , res) => {
-  const { error } = ValidationCreateProduct(req.body);
+  const { 
+    name , description , price , category , discount , quantity,
+  } = req.body;
+
+  const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
   if(error){
     return res.status(400).json({message: error.details[0].message})
   }
-  const { name , description , price , category , discount , quantity } = req.body;
 
+  let product;
   let images = [];
   try {
     if(req.files && req.files.length > 0){
@@ -65,17 +123,64 @@ const createProduct = async(req , res) => {
     }else{
       return res.status(400).json({ message: "image is required"});
     }
-    const product = new Product({
-      quantity,
-      name,
-      description,
-      price,
-      newPrice: price * (1 - (discount / 100)) || 0,
-      discount,
-      category,
-      images
-    });
-    await product.save();
+
+    const { 
+      size , colors , type , style , brand , subCategory , warranty,
+      Skin_type , Activity , material , Capacity , Smells , language,
+      author
+    } = req.body;
+    switch (category) {
+      case "Clothes":
+        product = new Clothes({
+          quantity,
+          name,
+          description,
+          price,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          discount,
+          category,
+          images,
+          size,
+          style,
+          colors,
+          type
+        })
+        await product.save();
+        break;
+      case "Electronics":
+        product = new Electronics({
+          quantity,
+          name,
+          description,
+          price,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          discount,
+          category,
+          images,
+          colors,
+          type
+        });
+        await product.save();
+      case "Shoes":
+        product = new Shoes({
+          quantity,
+          name,
+          description,
+          price,
+          newPrice: price * (1 - (discount / 100)) || 0,
+          discount,
+          category,
+          images,
+          size,
+          style,
+          colors,
+          type
+        })
+        await product.save();
+      default:
+        // res.status(400).json({message: "Invalid category"});
+        break;
+    }
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
     console.log("Error from createProduct: ", err);

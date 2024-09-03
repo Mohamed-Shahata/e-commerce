@@ -4,10 +4,10 @@ const {
   loginController,
   verifyEmail,
   verifyRefreshToken,
-  logoutController
+  logoutController,
+  sendNewCode
 } = require("../Controllers/authController");
 const passport = require("passport");
-const { createToken, refreshToken } = require("../config/jwt");
 const { verifyTokenAndAutherization } = require("../middlewares/verifyToken.js");
 const router = express.Router();
 
@@ -17,6 +17,9 @@ router.route("/register")
 
 router.route("/verify")
                       .post(verifyEmail);
+
+router.route("/new-code")
+                      .post(sendNewCode);
 
 router.route("/refresh-token")
                       .post(verifyRefreshToken);

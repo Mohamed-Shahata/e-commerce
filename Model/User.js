@@ -6,14 +6,14 @@ const UserSchema = new mongoose.Schema({
     type: String,
     required: true,
     trim: true,
-    minlenghth: 5,
+    minlenghth: 2,
     maxlenght: 40
   },
   lastName:{
     type: String,
     required: true,
     trim: true,
-    minlenghth: 5,
+    minlenghth: 2,
     maxlenght: 40
   },
   email:{
@@ -23,6 +23,11 @@ const UserSchema = new mongoose.Schema({
     unique: true,
     minlenghth: 1,
     maxlenght: 100
+  },
+  gender:{
+    type: String,
+    required: true,
+    enum:["male","female"],
   },
   vereificationCode:{
     type: String
