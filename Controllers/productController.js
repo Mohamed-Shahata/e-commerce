@@ -1,4 +1,18 @@
-const { Product, ValidationCreateProduct, ValidationUpdateProduct, Clothes, Electronics, Shoes } = require("../Model/Product.js");
+const {
+  Product,
+  ValidationCreateProduct,
+  ValidationUpdateProduct,
+  Clothes,
+  Electronics,
+  Shoes,
+  Accessories,
+  Bags,
+  Furniture,
+  Sports,
+  Perfumes,
+  Books,
+  Makeup
+} = require("../Model/Product.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -143,7 +157,7 @@ const getSingleProducts = async(req , res) => {
  */
 const createProduct = async(req , res) => {
   const { 
-    name , description , price , category , discount , quantity,
+    name , description , price , category , discount , quantity
   } = req.body;
 
   const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
@@ -225,7 +239,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Mackup":
-        product = new Shoes({
+        product = new Mackup({
           name,
           description,
           images,
@@ -243,7 +257,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Books":
-        product = new Shoes({
+        product = new Books({
           name,
           description,
           images,
@@ -260,7 +274,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Perfumes":
-        product = new Shoes({
+        product = new Perfumes({
           name,
           description,
           images,
@@ -278,7 +292,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Sports":
-        product = new Shoes({
+        product = new Sports({
           name,
           description,
           images,
@@ -296,7 +310,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Furniture":
-        product = new Shoes({
+        product = new Furniture({
           name,
           description,
           images,
@@ -313,7 +327,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Bags":
-        product = new Shoes({
+        product = new Bags({
           name,
           description,
           images,
@@ -330,7 +344,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Accessories":
-        product = new Shoes({
+        product = new Accessories({
           name,
           description,
           images,
