@@ -216,12 +216,12 @@ const ProductSchema = new mongoose.Schema({
 // function Validation Create Product
 const ValidationCreateProduct = (obj) => {
   const schema = Joi.object({
-    // name: Joi.string().min(2).max(50).required().trim(),
-    // description: Joi.string().min(2).max(1000).required().trim(),
-    // price: Joi.number().min(0).required(),
+    name: Joi.string().min(2).max(50).required().trim(),
+    description: Joi.string().min(2).max(1000).required().trim(),
+    price: Joi.number().min(0).required(),
     discount: Joi.number().min(0),
     quantity: Joi.number().min(1),
-    // category: Joi.string().required(),
+    category: Joi.string().required(),
   })
   return schema.validate(obj);
 }

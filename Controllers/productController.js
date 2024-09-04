@@ -2,17 +2,8 @@ const {
   Product,
   ValidationCreateProduct,
   ValidationUpdateProduct,
-  Clothes,
-  Electronics,
-  Shoes,
-  Accessories,
-  Bags,
-  Furniture,
-  Sports,
-  Perfumes,
-  Books,
-  Makeup
 } = require("../Model/Product.js");
+const {handleObject} = require("../utils/handelObjectWithProduct.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -163,48 +154,31 @@ const createProduct = async(req , res) => {
     authors
   } = req.body;
 
-  // const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
-  // if(error){
-  //   return res.status(400).json({message: error.details[0].message})
-  // }
+  const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
+  if(error){
+    return res.status(400).json({message: error.details[0].message})
+  }
 
   let product;
-  // let images = [];
+  let images = [];
   try {
-  //   if(req.files && req.files.length > 0){
-  //     images = req.files.map(file => ({
-  //       url: file.path,
-  //       publicId: file.filename
-  //     }));
-  //   }else{
-  //     return res.status(400).json({ message: "image is required"});
-  //   }
+    // if(req.files && req.files.length > 0){
+    //   images = req.files.map(file => ({
+    //     url: file.path,
+    //     publicId: file.filename
+    //   }));
+    // }else{
+    //   return res.status(400).json({ message: "image is required"});
+    // }
 
-  function handleObject(inputObject) {
-    const result = {};
-
-    for (const key in inputObject) {
-        if (inputObject[key] === "" || inputObject[key] === undefined) {
-            result[key] = null;
-        } else {
-            result[key] = inputObject[key];
-        }
-    }
-
-    return result;
-}
-
-const obj = handleObject({size , colors , type , style , brand});
-
-console.log(obj);
-// Output: { name: 'Mohamed', age: 18, email: null, phone: null }
-
-
-
-
-
-
-
+    const obj = handleObject({ 
+      name, description, price, category, discount, 
+      quantity, size, colors, type, style, brand,
+      subCategory, warranty, Skin_type, Activity, material,
+      Capacity, Smells, language,
+      authors
+    });
+    console.log(obj);
 
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
