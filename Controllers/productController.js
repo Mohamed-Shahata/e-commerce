@@ -239,7 +239,7 @@ const createProduct = async(req , res) => {
         await product.save();
         break;
       case "Mackup":
-        product = new Mackup({
+        product = new Makeup({
           name,
           description,
           images,
