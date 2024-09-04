@@ -157,7 +157,10 @@ const getSingleProducts = async(req , res) => {
  */
 const createProduct = async(req , res) => {
   const { 
-    name , description , price , category , discount , quantity
+    name , description , price , category , discount , quantity,
+    size , colors , type , style , brand , subCategory , warranty,
+    Skin_type , Activity , material , Capacity , Smells , language,
+    authors
   } = req.body;
 
   const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
@@ -177,192 +180,25 @@ const createProduct = async(req , res) => {
       return res.status(400).json({ message: "image is required"});
     }
 
-    const { 
-      size , colors , type , style , brand , subCategory , warranty,
-      Skin_type , Activity , material , Capacity , Smells , language,
-      authors
-    } = req.body;
-    switch (category) {
-      case "Clothes":
-        product = new Clothes({
-          subCategory,
-          quantity,
-          name,
-          description,
-          price,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          discount,
-          category,
-          images,
-          size,
-          style,
-          colors,
-          type,
-          brand
-        })
-        await product.save();
-        break;
-      case "Electronics":
-        product = new Electronics({
-          subCategory,
-          quantity,
-          name,
-          description,
-          price,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          discount,
-          category,
-          images,
-          colors,
-          brand,
-          warranty
-        });
-        await product.save();
-        break;
-      case "Shoes":
-        product = new Shoes({
-          subCategory,
-          quantity,
-          name,
-          description,
-          price,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          discount,
-          category,
-          images,
-          size,
-          style,
-          colors,
-          type,
-          brand
-        })
-        await product.save();
-        break;
-      case "Mackup":
-        product = new Makeup({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          colors,
-          type,
-          brand,
-          Skin_type
-        })
-        await product.save();
-        break;
-      case "Books":
-        product = new Books({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          type,
-          language,
-          authors
-        })
-        await product.save();
-        break;
-      case "Perfumes":
-        product = new Perfumes({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          type,
-          brand,
-          Capacity,
-          Smells
-        })
-        await product.save();
-        break;
-      case "Sports":
-        product = new Sports({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          colors,
-          brand,
-          Activity,
-          material
-        })
-        await product.save();
-        break;
-      case "Furniture":
-        product = new Furniture({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          size,
-          colors,
-          type,
-        })
-        await product.save();
-        break;
-      case "Bags":
-        product = new Bags({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          colors,
-          type,
-          brand
-        })
-        await product.save();
-        break;
-      case "Accessories":
-        product = new Accessories({
-          name,
-          description,
-          images,
-          price,
-          discount,
-          newPrice: price * (1 - (discount / 100)) || 0,
-          quantity,
-          category,
-          subCategory,
-          material,
-          type,
-          brand
-        })
-        await product.save();
-        break;
-      default:
-        return res.status(400).json({message: "Invalid category"});
+    let filterss;
+    function filters({...result}){
+      for(let i = 0; i < result.length; i++){
+        if(result[i] !== ""){
+          return result[i]
+        }
+      }
     }
+
+    filterss = filters({size , colors , type , style , brand});
+
+    console.log(filterss);
+
+
+
+
+
+
+
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
     console.log("Error from createProduct: ", err);
