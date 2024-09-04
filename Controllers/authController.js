@@ -17,7 +17,7 @@ const { createToken, refreshToken } = require("../config/jwt.js");
  */
 const registerController = async(req , res) => {
   const { firstName , lastName , email , password , gender } = req.body;
-  const { error } = ValidationRegisterUser({firstName , lastName , email , password });
+  const { error } = ValidationRegisterUser({ email });
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }

@@ -163,35 +163,45 @@ const createProduct = async(req , res) => {
     authors
   } = req.body;
 
-  const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
-  if(error){
-    return res.status(400).json({message: error.details[0].message})
-  }
+  // const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
+  // if(error){
+  //   return res.status(400).json({message: error.details[0].message})
+  // }
 
   let product;
-  let images = [];
+  // let images = [];
   try {
-    if(req.files && req.files.length > 0){
-      images = req.files.map(file => ({
-        url: file.path,
-        publicId: file.filename
-      }));
-    }else{
-      return res.status(400).json({ message: "image is required"});
-    }
+  //   if(req.files && req.files.length > 0){
+  //     images = req.files.map(file => ({
+  //       url: file.path,
+  //       publicId: file.filename
+  //     }));
+  //   }else{
+  //     return res.status(400).json({ message: "image is required"});
+  //   }
 
-    let filterss;
-    function filters({...result}){
-      for(let i = 0; i < result.length; i++){
-        if(result[i] !== ""){
-          return result[i]
-        }
-      }
-    }
+  function createObject(...args) {
+    const result = {};
+    
+    args.forEach(arg => {
+        const key = Object.keys(arg)[0];
+        const value = arg[key];
+        
+        result[key] = value === "" || value === undefined ? null : value;
+    });
+    
+    return result;
+}
 
-    filterss = filters({size , colors , type , style , brand});
+// مثال على الاستخدام:
+const obj = createObject(
+    {name: "Mohamed"},
+    {age: 18},
+    {email: ""},
+    {phone: undefined}
+);
 
-    console.log(filterss);
+console.log(obj);
 
 
 
