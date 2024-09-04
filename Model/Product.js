@@ -188,21 +188,24 @@ const ProductSchema = new mongoose.Schema({
         default: 0,
         min: 0,
         max: 5
+      },
+      text:{
+        type: String
       }
     }
   ],
-  // images:[
-  //   {
-  //     url:{
-  //       type: String,
-  //       required: true
-  //     },
-  //     publicId:{
-  //       type: String,
-  //       required: true
-  //     }
-  //   }
-  // ],
+  images:[
+    {
+      url:{
+        type: String,
+        required: true
+      },
+      publicId:{
+        type: String,
+        required: true
+      }
+    }
+  ],
   createAt:{
     type: Date,
     default: Date.now()

@@ -35,7 +35,7 @@ const UserSchema = new mongoose.Schema({
   },
   image:{
     type: String,
-    default: "default-image.png"
+    default: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"
   },
   imagePublicId:{
     type: String,

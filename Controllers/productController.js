@@ -311,7 +311,7 @@ const deleteproduct = async(req , res) => {
 
 
 const reviewProduct = async(req ,res) => {
-  const { reviewNum , userId } = req.body
+  const { reviewNum , userId , text } = req.body
   const id = req.params.id;
   try {
 
@@ -333,10 +333,14 @@ const reviewProduct = async(req ,res) => {
       return res.status(404).json({message: "The user is already valuable"}) 
     }
 
-    product.reviews.push({user: userId , averageRating: reviewNum});
+    product.reviews.push({
+      user: userId ,
+      averageRating: reviewNum,
+      text
+    });
     await product.save();
 
-    res.status(200).json({product});
+    res.status(200).json({ product });
   } catch (err) {
     console.log("Error from createReviewProduct: ", err);
     res.status(500).json({error: "Server error"});
