@@ -16,7 +16,7 @@ const { createToken, refreshToken } = require("../config/jwt.js");
  * @access      public
  */
 const registerController = async(req , res) => {
-  const { firstName , lastName , email , password , confirmPassword , gender } = req.body;
+  const { firstName , lastName , email , password , gender } = req.body;
   const { error } = ValidationRegisterUser({firstName , lastName , email , password });
   if(error){
     return res.status(400).json({message: error.details[0].message});
@@ -39,10 +39,6 @@ const registerController = async(req , res) => {
       await sendVerificationCode(email , vereificationCode);
       return res.status(401).json({message: "The code is worng"});
     }else{
-
-      if(confirmPassword !== password){
-        return res.status(401).json({message: "The password is not the same"})
-      }
 
     const salt = await bcryptjs.genSalt(10);
     const hashPassword = await bcryptjs.hash(password , salt);
