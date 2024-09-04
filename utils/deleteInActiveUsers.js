@@ -6,7 +6,7 @@ const cron = require("node-cron");
  * @access      private
  */
 const deleteInActiveUsers = async() => {
-  const tenDayAgo = Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
+  const tenDayAgo = Date(Date.now() - 24 * 60 * 60 * 1000);
   try {
     const result = await User.deleteMany({
       registed: false,
