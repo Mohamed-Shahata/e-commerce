@@ -16,8 +16,8 @@ const { createToken, refreshToken } = require("../config/jwt.js");
  * @access      public
  */
 const registerController = async(req , res) => {
-  const { firstName , lastName , email , password , gender } = req.body;
-  const { error } = ValidationRegisterUser({ email });
+  const { firstName , lastName , email , password , confirmPassword , gender } = req.body;
+  const { error } = ValidationRegisterUser({firstName , lastName , email , password });
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }
@@ -25,14 +25,14 @@ const registerController = async(req , res) => {
   try {
     let user = await User.findOne({ email }).select("-password");
 
+    if(user){
+      return res.status(400).json({message: "User already exists"})
+    }
 
     if(user && user.registed === true){
       return res.status(400).json({message: "User already exsist"});
     }else if(user && user.registed === false){
 
-      if(confirmPassword !== password){
-        return res.status(401).json({message: "The password is not the same"})
-      }
       const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
       user.vereificationCode = vereificationCode;
       await user.save();

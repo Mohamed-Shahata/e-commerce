@@ -180,28 +180,25 @@ const createProduct = async(req , res) => {
   //     return res.status(400).json({ message: "image is required"});
   //   }
 
-  function createObject(...args) {
+  function handleObject(inputObject) {
     const result = {};
-    
-    args.forEach(arg => {
-        const key = Object.keys(arg)[0];
-        const value = arg[key];
-        
-        result[key] = value === "" || value === undefined ? null : value;
-    });
-    
+
+    for (const key in inputObject) {
+        if (inputObject[key] === "" || inputObject[key] === undefined) {
+            result[key] = null;
+        } else {
+            result[key] = inputObject[key];
+        }
+    }
+
     return result;
 }
 
-// مثال على الاستخدام:
-const obj = createObject(
-    {name: "Mohamed"},
-    {age: 18},
-    {email: ""},
-    {phone: undefined}
-);
+const obj = handleObject({size , colors , type , style , brand});
 
 console.log(obj);
+// Output: { name: 'Mohamed', age: 18, email: null, phone: null }
+
 
 
 
