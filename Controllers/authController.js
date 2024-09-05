@@ -107,11 +107,15 @@ const verifyEmail = async(req , res) => {
   }
 };
 
-const sendNewCode = async() => {
+const sendNewCode = async(req , res) => {
   const { email } = req.body;
   const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
     const user = await User.findOne({ email });
+
+    if(user.registed === true){
+      return res.status(400).json({message: "User already registed"})
+    }
     user.vereificationCode = vereificationCode;
     await user.save();
     await sendVerificationCode(email , vereificationCode);

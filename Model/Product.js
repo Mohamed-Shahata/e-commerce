@@ -48,8 +48,7 @@ const ProductSchema = new mongoose.Schema({
       "Bags"
     ],
   },
-  attributes:[
-    {
+  attributes:{
       subCategory:{
         type: String,
         enum:[
@@ -174,9 +173,7 @@ const ProductSchema = new mongoose.Schema({
         ],
       },
 
-
-    }
-  ],
+    },
   reviews:[
     {
       user:{
@@ -225,6 +222,7 @@ const ValidationCreateProduct = (obj) => {
     discount: Joi.number().min(0),
     quantity: Joi.number().min(1),
     category: Joi.string().required(),
+    offer: Joi.boolean()
   })
   return schema.validate(obj);
 }
@@ -238,6 +236,7 @@ const ValidationUpdateProduct = (obj) => {
     discount: Joi.number().min(0),
     quantity: Joi.number().min(1),
     category: Joi.string(),
+    offer: Joi.boolean()
   })
   return schema.validate(obj);
 }

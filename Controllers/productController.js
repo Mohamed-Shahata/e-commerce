@@ -4,6 +4,7 @@ const {
   ValidationUpdateProduct,
 } = require("../Model/Product.js");
 const {handleObject} = require("../utils/handelObjectWithProduct.js");
+const { clothesCategory } = require("../utils/validatCategory.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -148,37 +149,56 @@ const getSingleProducts = async(req , res) => {
  */
 const createProduct = async(req , res) => {
   const { 
-    name , description , price , category , discount , quantity,
-    size , colors , type , style , brand , subCategory , warranty,
-    Skin_type , Activity , material , Capacity , Smells , language,
-    authors
+    name , description , price , category , discount = 0 , quantity,
+    offer, size , colors , type , style , brand , subCategory , 
+    warranty,Skin_type , Activity , material , Capacity , Smells ,
+    language, authors
   } = req.body;
 
-  const { error } = ValidationCreateProduct({name , description , price , category , discount , quantity});
+  const { error } = ValidationCreateProduct({
+    name, description, price, category, discount, quantity, offer
+  }
+  );
   if(error){
     return res.status(400).json({message: error.details[0].message})
   }
 
-  let product;
   let images = [];
   try {
-    // if(req.files && req.files.length > 0){
-    //   images = req.files.map(file => ({
-    //     url: file.path,
-    //     publicId: file.filename
-    //   }));
-    // }else{
-    //   return res.status(400).json({ message: "image is required"});
-    // }
+    if(req.files && req.files.length > 0){
+      images = req.files.map(file => ({
+        url: file.path,
+        publicId: file.filename
+      }));
+    }else{
+      return res.status(400).json({ message: "image is required"});
+    }
 
     const obj = handleObject({ 
-      name, description, price, category, discount, 
-      quantity, size, colors, type, style, brand,
+      size, colors, type, style, brand,
       subCategory, warranty, Skin_type, Activity, material,
-      Capacity, Smells, language,
-      authors
+      Capacity, Smells, language,authors
     });
-    console.log(obj);
+    // console.log(obj);
+
+
+
+
+
+    const product = new Product({
+      name,
+      description,
+      price,
+      discount,
+      category,
+      quantity,
+      offer,
+      attributes: obj,
+      images,
+    })
+
+    await product.save();
+    
 
     res.status(200).json({ message: "Created product successfully", product });
   } catch (err) {
