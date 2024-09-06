@@ -1,22 +1,18 @@
-// 1. الواردات الأساسية والمكتبات الخارجية
 const express = require("express");
 require("dotenv").config();
+const connectDB = require("./config/db.js");
+const app = express();
 const path = require("path");
 const passport = require("passport");
+require("./config/passport.js");
 const cors = require("cors");
 const compression = require("compression");
-const cookieParser = require("cookie-parser");
-
-const connectDB = require("./config/db.js");
-require("./config/passport.js");
-
 const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
 const productsRoute = require("./Router/productRoute.js");
 const payment = require("./Router/paymentRoute.js");
-
-const app = express();
+const cookieParser = require("cookie-parser");
 
 
 connectDB();
