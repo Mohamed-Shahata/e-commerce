@@ -22,7 +22,7 @@ router.route("/new-code")
                       .post(sendNewCode);
 
 router.route("/refresh-token")
-                      .post(verifyRefreshToken);
+                      .get(verifyRefreshToken);
 
 router.route("/login")
                       .post(loginController)
