@@ -172,8 +172,6 @@ const loginController = async(req , res) => {
       path: "/",
     });
     
-    
-    
 
     res.status(200).json({message: "login successfully" , user , accessToken})
   } catch (err) {
