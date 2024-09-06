@@ -167,11 +167,12 @@ const loginController = async(req , res) => {
 
 
     res.cookie("refreshToken", createRefreshToken, {
-      secure: true,
-      sameSite: "strict",
-      domain: "e-commerce-production-2d41.up.railway.app",
+      secure: false,
+      sameSite: "lax",
       path: "/",
     });
+    
+    
     
 
     res.status(200).json({message: "login successfully" , user , accessToken})
