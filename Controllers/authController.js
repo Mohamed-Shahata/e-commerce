@@ -182,7 +182,7 @@ const loginController = async(req , res) => {
 const verifyRefreshToken = async(req , res) => {
   const { refreshToken } = req.cookies;
   if(!refreshToken){
-    return res.status(401);
+    return res.status(401).json({message: "is logout"});
   };
   const user = await User.findOne({ refreshToken });
   if(!user){
