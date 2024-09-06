@@ -54,7 +54,7 @@ const registerController = async(req , res) => {
     await user.save();
     await sendVerificationCode(email , vereificationCode);
 
-    res.status(200).json({ email });
+    res.status(200).json({ message: "Check your email" });
   }
   } catch (err) {
     console.log("Error from register: " , err);
