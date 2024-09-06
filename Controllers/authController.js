@@ -194,7 +194,7 @@ const verifyRefreshToken = async(req , res) => {
       return res.status(403)
     }
     const accessToken = createToken(user);
-    res.status(200).json({ accessToken , user });
+    res.status(200).json({ accessToken , user: user });
   })
 };
 
