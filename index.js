@@ -23,7 +23,6 @@ connectDB();
 
 //middlewares
 app.use(cors({
-    origin: "https://e-commerce-production-2d41.up.railway.app/",
     credentials: true, 
   }));
 app.use(compression());
