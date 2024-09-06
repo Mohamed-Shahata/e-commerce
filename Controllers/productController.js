@@ -15,7 +15,7 @@ const cloudinary = require("cloudinary").v2;
  */
 const getAllProducts = async(req , res) => {
   const { 
-    pageNum = 1, category, size, type, colors, style, minPrice, maxPrice,
+    pageNum= 1, category, size, type, colors, style, minPrice, maxPrice,
     brand, subCategory, warranty, Skin_type, Activity,
     material, Capacity, Smells, language, authors
   } = req.query;
@@ -180,10 +180,6 @@ const createProduct = async(req , res) => {
       Capacity, Smells, language,authors
     });
     // console.log(obj);
-
-
-
-
 
     const product = new Product({
       name,

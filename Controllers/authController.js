@@ -113,7 +113,7 @@ const sendNewCode = async(req , res) => {
   try {
     const user = await User.findOne({ email });
 
-    if(user.registed === true){
+    if(user && user.registed === true){
       return res.status(400).json({message: "User already registed"})
     }
     user.vereificationCode = vereificationCode;
@@ -140,7 +140,7 @@ const loginController = async(req , res) => {
     return res.status(400).json({message: error.details[0].message});
   }
 
-  const { email , password } = req.body;
+  const { email , password , remmber } = req.body;
   try {
     const user = await User.findOne({ email });
     if(!user){
@@ -160,6 +160,7 @@ const loginController = async(req , res) => {
 
     user.refreshToken = createRefreshToken;
     await user.save();
+
 
     res.cookie("refreshToken", createRefreshToken , {
       httpOnly: true,
