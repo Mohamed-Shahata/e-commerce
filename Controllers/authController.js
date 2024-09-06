@@ -167,7 +167,6 @@ const loginController = async(req , res) => {
 
 
     res.cookie("refreshToken", createRefreshToken , {
-      httpOnly: true,
       secure: true,
       sameSite: "strict",
     });
