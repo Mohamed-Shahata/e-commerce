@@ -23,7 +23,7 @@ const registerController = async(req , res) => {
   }
     const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
-    let user = await User.findOne({ email }).select("-password");
+    let user = await User.findOne({ email });
 
     if(user){
       return res.status(400).json({message: "User already exists"})
