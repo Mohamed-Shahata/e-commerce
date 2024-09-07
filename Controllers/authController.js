@@ -90,11 +90,12 @@ const verifyEmail = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-    res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "lax",
-      path: "/",
+    res.cookie("refreshToken", createRefreshToken , {
+      httpOnly: true,
+      secure: true,
+      sameSite: "strict",
     });
+
 
     return res.status(200).json({message: "verify successfully" , user , accessToken})
   
@@ -152,7 +153,6 @@ const loginController = async(req , res) => {
   const { email , password , remmber } = req.body;
   try {
     const user = await User.findOne({ email })
-    .select("-refreshToken").select("-password");
     if(!user){
       return res.status(404).json({message: "User not found"});
     };
@@ -170,6 +170,7 @@ const loginController = async(req , res) => {
 
     user.refreshToken = createRefreshToken;
     await user.save();
+
 
     res.cookie("refreshToken", createRefreshToken, {
       secure: false,
