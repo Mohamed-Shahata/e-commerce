@@ -170,10 +170,10 @@ const loginController = async(req, res) => {
     await user.save();
 
     res.cookie("refreshToken", createRefreshToken, {
-      httpOnly: true, // لضمان أن الكوكي لا يمكن الوصول إليه من الجافاسكريبت
-      secure: process.env.NODE_ENV === "production", // استخدم `secure` في بيئات الإنتاج فقط
-      sameSite: "None", // السماح بالكوكي عبر المجالات
-      maxAge: 24 * 60 * 60 * 1000, // مدة صلاحية الكوكي 24 ساعة
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", 
+      sameSite: "None", 
+      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({
