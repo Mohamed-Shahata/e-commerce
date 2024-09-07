@@ -90,12 +90,11 @@ const verifyEmail = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-    res.cookie("refreshToken", createRefreshToken , {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+    res.cookie("refreshToken", createRefreshToken, {
+      secure: false,
+      sameSite: "lax",
+      path: "/",
     });
-
 
     return res.status(200).json({message: "verify successfully" , user , accessToken})
   
