@@ -170,9 +170,8 @@ const loginController = async(req, res) => {
     await user.save();
 
     res.cookie("refreshToken", createRefreshToken, {
-      secure: process.env.NODE_ENV === "production", 
+      secure: false, 
       sameSite: "None", 
-      maxAge: 24 * 60 * 60 * 1000,
     });
 
     return res.status(200).json({

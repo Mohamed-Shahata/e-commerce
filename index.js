@@ -19,7 +19,10 @@ connectDB();
 
 //middlewares
 app.use(cors(
-  { credentials: true }
+  {
+    origin: "http://localhost:5000",
+    credentials: true 
+  }
 ));
 
 app.use(compression());
