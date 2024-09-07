@@ -174,7 +174,7 @@ const loginController = async(req, res) => {
 
 
 const verifyRefreshToken = async(req , res) => {
-  const refreshToken = req.query;
+  const { refreshToken } = req.body;
   if(!refreshToken){
     return res.status(401).json({message: "is logout"});
   };
@@ -210,5 +210,4 @@ module.exports = {
   verifyEmail,
   verifyRefreshToken,
   sendNewCode,
-  loginControllerView
 };
