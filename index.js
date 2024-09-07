@@ -18,10 +18,7 @@ const cookieParser = require("cookie-parser");
 connectDB();
 
 //middlewares
-app.use(cors({
-    origin: "https://e-commerce-production-2d41.up.railway.app/api",
-    credentials: true, 
-  }));
+app.use(cors());
   
 app.use(compression());
 app.use(express.json({limit: "50mb"}));
