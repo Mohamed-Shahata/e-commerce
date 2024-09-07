@@ -209,7 +209,9 @@ const logoutController = async(req , res) => {
   if(user){
     user.refreshToken = null;
     await user.save();
-  };
+  }else{
+    return res.status(200).json({message: "user not found"});
+  }
   res.status(200).json({message: "logout successfully"});
 }
 
