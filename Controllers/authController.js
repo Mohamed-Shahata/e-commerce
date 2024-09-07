@@ -90,12 +90,7 @@ const verifyEmail = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-    res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "None",
-    });
-
-    return res.status(200).json({message: "verify successfully" , user , accessToken})
+    return res.status(200).json({message: "verify successfully" , user , accessToken , createRefreshToken})
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -138,10 +133,6 @@ const sendNewCode = async(req , res) => {
  * @access      public
  */
 
-const loginControllerView = (req ,res) => {
-  res.render("login/login");
-}
-
 const loginController = async(req, res) => {
   const { error } = ValidationLoginUser(req.body);
   if (error) {
@@ -150,7 +141,7 @@ const loginController = async(req, res) => {
 
   const { email, password, remmber } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("-refreshToken");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
@@ -165,29 +156,25 @@ const loginController = async(req, res) => {
 
     const accessToken = createToken(user);
     const createRefreshToken = refreshToken(user);
-
-    user.refreshToken = createRefreshToken;
+    
     await user.save();
-
-    res.cookie("refreshToken", createRefreshToken, {
-      secure: false, 
-      sameSite: "None", 
-    });
 
     return res.status(200).json({
       message: "Login successful",
       user,
       accessToken,
+      createRefreshToken
     });
   } catch (err) {
-    return res.status(500).json({ message: "Server error" });
+    console.log("Error from loginController: " , err);
+    res.status(500).json({ error: "Server error" });
   }
 };
 
 
 
 const verifyRefreshToken = async(req , res) => {
-  const refreshToken = req.cookies.refreshToken;
+  const refreshToken = req.query;
   if(!refreshToken){
     return res.status(401).json({message: "is logout"});
   };
