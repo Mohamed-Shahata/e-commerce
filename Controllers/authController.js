@@ -71,7 +71,8 @@ const registerController = async(req , res) => {
 const verifyEmail = async(req , res) => {
   const { email , code } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+    .select("-refreshToken").select("-password");
     if(!user){
       return res.status(404).json({message: "User not found"});
     }
@@ -89,12 +90,11 @@ const verifyEmail = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-    res.cookie("refreshToken", createRefreshToken , {
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict",
+    res.cookie("refreshToken", createRefreshToken, {
+      secure: false,
+      sameSite: "lax",
+      path: "/",
     });
-
 
     return res.status(200).json({message: "verify successfully" , user , accessToken})
   
@@ -151,7 +151,8 @@ const loginController = async(req , res) => {
 
   const { email , password , remmber } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email })
+    .select("-refreshToken").select("-password");
     if(!user){
       return res.status(404).json({message: "User not found"});
     };
@@ -170,14 +171,12 @@ const loginController = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-
     res.cookie("refreshToken", createRefreshToken, {
       secure: false,
       sameSite: "lax",
       path: "/",
     });
     
-
     res.status(200).json({message: "login successfully" , user , accessToken})
   } catch (err) {
     console.log("Error from Login: " , err);
@@ -188,11 +187,12 @@ const loginController = async(req , res) => {
 
 
 const verifyRefreshToken = async(req , res) => {
-  const { refreshToken } = req.cookies;
+  const refreshToken = req.cookies.refreshToken;
   if(!refreshToken){
     return res.status(401).json({message: "is logout"});
   };
-  const user = await User.findOne({ refreshToken });
+  const user = await User.findOne({ refreshToken })
+  .select("-refreshToken").select("-password");
   if(!user){
     return res.status(403);
   };
