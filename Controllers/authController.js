@@ -142,25 +142,25 @@ const loginControllerView = (req ,res) => {
   res.render("login/login");
 }
 
-const loginController = async(req , res) => {
+const loginController = async(req, res) => {
   const { error } = ValidationLoginUser(req.body);
-  if(error){
-    return res.status(400).json({message: error.details[0].message});
+  if (error) {
+    return res.status(400).json({ message: error.details[0].message });
   }
 
-  const { email , password , remmber } = req.body;
+  const { email, password, remmber } = req.body;
   try {
-    const user = await User.findOne({ email })
-    if(!user){
-      return res.status(404).json({message: "User not found"});
-    };
-    if(user.registed === false){
-      return res.status(400).json({message: "Complete creating your account"})
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-    const comparePassword = await bcryptjs.compare(password , user.password);
+    if (user.registed === false) {
+      return res.status(400).json({ message: "Complete creating your account" });
+    }
 
-    if(email !== user.email || comparePassword == false){
-      return res.status(401).json({message: "email or password is worng"})
+    const comparePassword = await bcryptjs.compare(password, user.password);
+    if (email !== user.email || comparePassword === false) {
+      return res.status(401).json({ message: "Email or password is wrong" });
     }
 
     const accessToken = createToken(user);
@@ -169,16 +169,20 @@ const loginController = async(req , res) => {
     user.refreshToken = createRefreshToken;
     await user.save();
 
-
     res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "None",
+      httpOnly: true, // لضمان أن الكوكي لا يمكن الوصول إليه من الجافاسكريبت
+      secure: process.env.NODE_ENV === "production", // استخدم `secure` في بيئات الإنتاج فقط
+      sameSite: "None", // السماح بالكوكي عبر المجالات
+      maxAge: 24 * 60 * 60 * 1000, // مدة صلاحية الكوكي 24 ساعة
     });
-    
-    res.status(200).json({message: "login successfully" , user , accessToken})
+
+    return res.status(200).json({
+      message: "Login successful",
+      user,
+      accessToken,
+    });
   } catch (err) {
-    console.log("Error from Login: " , err);
-    res.status(500).json({ error: "Server error" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
 
