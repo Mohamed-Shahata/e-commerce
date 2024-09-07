@@ -89,8 +89,15 @@ const verifyEmail = async(req , res) => {
 
     user.refreshToken = createRefreshToken;
     await user.save();
+    user.refreshToken = undefined;
+    user.password = undefined;
 
-    return res.status(200).json({message: "verify successfully" , user , accessToken , createRefreshToken})
+    return res.status(200).json({
+      message: "verify successfully" ,
+      user ,
+      accessToken ,
+      refreshToken: createRefreshToken
+    })
   
   } catch (err) {
     console.log("Error from verifyEmail: " , err);
@@ -160,6 +167,8 @@ const loginController = async(req, res) => {
     user.refreshToken = createRefreshToken;
     
     await user.save();
+    user.refreshToken = undefined;
+    user.password = undefined;
 
     return res.status(200).json({
       message: "Login successful",
