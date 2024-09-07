@@ -205,12 +205,11 @@ const verifyRefreshToken = async(req , res) => {
 };
 
 const logoutController = async(req , res) => {
-  const user = await User.findOne({refreshToken: req.cookies.refreshToken})
+  const user = await User.findOne({refreshToken: req.body.refreshToken})
   if(user){
     user.refreshToken = null;
     await user.save();
   };
-  res.clearCookie("refreshToken");
   res.status(200).json({message: "logout successfully"});
 }
 
