@@ -91,9 +91,7 @@ const verifyEmail = async(req , res) => {
     await user.save();
 
     res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "lax",
-      path: "/",
+      sameSite: "None",
     });
 
     return res.status(200).json({message: "verify successfully" , user , accessToken})
@@ -172,9 +170,7 @@ const loginController = async(req , res) => {
 
 
     res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "lax",
-      path: "/",
+      sameSite: "None",
     });
     
     res.status(200).json({message: "login successfully" , user , accessToken})
