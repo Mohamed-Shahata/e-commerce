@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken");
 
 const verifyToken = async(req , res , next) => {
 
-  const token = req.header("token").replace("Bearer " , "");
+  const token = req.header("token").replace("Bearer ", "");
 
   try {
 
