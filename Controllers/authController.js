@@ -138,6 +138,11 @@ const sendNewCode = async(req , res) => {
  * @method      POST
  * @access      public
  */
+
+const loginControllerView = (req ,res) => {
+  res.render("login/login");
+}
+
 const loginController = async(req , res) => {
   const { error } = ValidationLoginUser(req.body);
   if(error){
@@ -180,6 +185,8 @@ const loginController = async(req , res) => {
   }
 };
 
+
+
 const verifyRefreshToken = async(req , res) => {
   const { refreshToken } = req.cookies;
   if(!refreshToken){
@@ -215,5 +222,6 @@ module.exports = {
   logoutController,
   verifyEmail,
   verifyRefreshToken,
-  sendNewCode
+  sendNewCode,
+  loginControllerView
 };

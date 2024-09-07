@@ -5,7 +5,8 @@ const {
   verifyEmail,
   verifyRefreshToken,
   logoutController,
-  sendNewCode
+  sendNewCode,
+  loginControllerView
 } = require("../Controllers/authController");
 const passport = require("passport");
 const { verifyTokenAndAutherization } = require("../middlewares/verifyToken.js");
@@ -25,6 +26,7 @@ router.route("/refresh-token")
                       .get(verifyRefreshToken);
 
 router.route("/login")
+                      .get(loginControllerView)
                       .post(loginController)
 
 router.route("/logout")

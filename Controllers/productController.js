@@ -179,8 +179,8 @@ const createProduct = async(req , res) => {
       subCategory, warranty, Skin_type, Activity, material,
       Capacity, Smells, language,authors
     });
-    // console.log(obj);
 
+    let discountPercentage = price - ( price * (discount / 100))
     const product = new Product({
       name,
       description,
@@ -191,6 +191,7 @@ const createProduct = async(req , res) => {
       offer,
       attributes: obj,
       images,
+      newPrice: discount ? discountPercentage : price
     })
 
     await product.save();
@@ -225,61 +226,14 @@ const updateProduct = async(req , res) => {
   const id = req.params.id;
 
   try {
-    const product = await Product.findById(id);
+    const product = await Product.findByIdAndUpdate(id,
+      req.body 
+    );
     if(!product){
       return res.status(404).json({message: "Product not found"});
     }
 
-    if(size){
-      product.size.push(size || product.size);
-    }
-    if(type){
-      product.type = type || product.type;
-    }
-    if(colors){
-      product.colors.push(colors || product.colors);
-    }
-    if(style){
-      product.style = style || product.style;
-    }
-    if(brand){
-      product.brand = brand || product.brand;
-    }
-    if(subCategory){
-      product.subCategory = subCategory || product.subCategory;
-    }
-    if(warranty){
-      product.warranty = warranty || product.warranty;
-    }
-    if(Skin_type){
-      product.Skin_type = Skin_type || product.Skin_type;
-    }
-    if(Activity){
-      product.Activity = Activity || product.Activity;
-    }
-    if(material){
-      product.material = material || product.material;
-    }
-    if(Capacity){
-      product.Capacity = Capacity || product.Capacity;
-    }
-    if(Smells){
-      product.Smells = Smells || product.Smells;
-    }
-    if(language){
-      product.language = language || product.language;
-    }
-    if(authors){
-      product.authors = authors || product.authors;
-    }
 
-    product.name = name || product.name;
-    product.price = price || product.price;
-    product.category = category || product.category;
-    product.description = description || product.description;
-    product.discount = discount || product.discount;
-    product.quantity = quantity || product.quantity;
-    product.offer = offer || product.offer;
     let images = [];
     if(req.files.length !== 0){
       for(let i = 0 ; i < product.images.length; i++){
