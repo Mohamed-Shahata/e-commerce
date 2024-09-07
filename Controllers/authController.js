@@ -156,6 +156,8 @@ const loginController = async(req, res) => {
 
     const accessToken = createToken(user);
     const createRefreshToken = refreshToken(user);
+
+    user.refreshToken = createRefreshToken;
     
     await user.save();
 
@@ -163,7 +165,7 @@ const loginController = async(req, res) => {
       message: "Login successful",
       user,
       accessToken,
-      createRefreshToken
+      refreshToken: createRefreshToken
     });
   } catch (err) {
     console.log("Error from loginController: " , err);
