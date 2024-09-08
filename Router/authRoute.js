@@ -54,15 +54,13 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     const accessToken = req.authInfo.accessToken
     const createRefreshToken = req.authInfo.refreshToken
 
-    res.cookie("refreshToken", createRefreshToken ,{
-      httpOnly: true,
-      secure: true,
-      sameSite: "strict"
+    res.status(200).json({
+      message: "register successfully",
+      user,
+      accessToken,
+      refreshToken: createRefreshToken
     })
-
-    res.status(200).json({message: "register successfully" , user , accessToken})
   });
-
 
   router.get('/google/login', passport.authenticate('googleLogin', {
     scope: ['profile', 'email'],
@@ -86,13 +84,12 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       const accessToken = req.authInfo.accessToken
       const createRefreshToken = req.authInfo.refreshToken
 
-      res.cookie("refreshToken", createRefreshToken ,{
-        httpOnly: true,
-        secure: true,
-        sameSite: "strict"
-      })
-
-      res.status(200).json({ message: 'Login successfully', user, accessToken });
-    })
+      res.status(200).json({
+        message: "register successfully",
+        user,
+        accessToken,
+        refreshToken: createRefreshToken
+      });
+    });
   
   module.exports = router;
