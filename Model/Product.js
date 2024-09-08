@@ -115,7 +115,7 @@ const ProductSchema = new mongoose.Schema({
           "Giorgio","Tom Forf","Jo Malone","Loewe",
           "Tiffany & Co","Cartier","Rolex","Pandora","Ray-Ban",
           "Michael Kors","Swarovski",
-
+          
         ],
       },
       warranty:{
