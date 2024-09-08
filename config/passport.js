@@ -3,14 +3,14 @@ const GoogleStratgy = require("passport-google-oauth20").Strategy;
 const { User } = require("../Model/User.js");
 const bcryptjs = require("bcryptjs");
 const crypto = require("crypto");
-
+const { createToken, refreshToken } = require("../config/jwt.js");
 
 passport.use("googleRegister" , new GoogleStratgy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
   callbackURL: process.env.CLIENT_URL_REGISTER
 },
-  async(accessToken , refreshToken , profile , done) => {
+  async(accessToken1 , refreshToken1 , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(user){
@@ -31,9 +31,12 @@ passport.use("googleRegister" , new GoogleStratgy({
         registed: true,
         vereificationCode: null
       });
+      const accessToken = createToken(user)
+      const createRefreshToken = refreshToken(user);
+      user.refreshToken = createRefreshToken;
       await user.save();
 
-      return done(null , user ,{ accessToken , refreshToken});
+      return done(null , user ,{ accessToken , createRefreshToken});
     } catch (err) {
       done(err , false)
     }
@@ -45,14 +48,19 @@ passport.use("googleLogin", new GoogleStratgy({
     clientSecret: process.env.CLIENT_SECRET,
     callbackURL: process.env.CLIENT_URL_LOGIN
 },
-  async(accessToken , refreshToken , profile , done) => {
+  async(accessToken1 , refreshToken1 , profile , done) => {
     try {
       let user = await User.findOne({email: profile.emails[0].value});
       if(!user){
         return done(null , false , {message: "No account found for this Google account"})
       }
 
-      return done(null , user ,{ accessToken , refreshToken});
+      const accessToken = createToken(user)
+      const createRefreshToken = refreshToken(user);
+      user.refreshToken = createRefreshToken;
+      await user.save();
+
+      return done(null , user ,{ accessToken , createRefreshToken});
     } catch (err) {
       done(err , false)
     }

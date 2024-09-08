@@ -54,26 +54,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     const accessToken = req.authInfo.accessToken
     const createRefreshToken = req.authInfo.refreshToken
 
-    res.cookie('accessToken', accessToken, {
-      httpOnly: true, 
-      secure: true, // اجعلها true في حالة الـ HTTPS
-      sameSite: 'Strict', // لمنع إرسال الكوكيز من مواقع أخرى
-    });
     
-    res.cookie('refreshToken', createRefreshToken, {
-      httpOnly: true, 
-      secure: true, 
-      sameSite: 'Strict',
-    });
-  
-    res.cookie('user', user.email , {
-      httpOnly: true, 
-      secure: true, 
-      sameSite: 'Strict',
-    });
-    
-  
-    res.redirect('https://osama78s.github.io/E-commerce/');
     
 
   });
@@ -98,11 +79,14 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       await user.save();
 
       const accessToken = req.authInfo.accessToken
-      const createRefreshToken = req.authInfo.refreshToken
+      const createRefreshToken = req.authInfo.createRefreshToken
 
-      const frontendURL = `https://osama78s.github.io/E-commerce/?name=${user.name}&image=${user.image}&email=${user.email}&accessToken=${accessToken}&refreshToken=${createRefreshToken}`
-
-      res.status(302).redirect(frontendURL);
+      res.status(200).json({
+        message:"Login successfully",
+        user,
+        accessToken,
+        refreshToken: createRefreshToken
+      })
     });
   
   module.exports = router;
