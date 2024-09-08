@@ -21,7 +21,7 @@ const sendForgotPasswordLink = async(req , res) => {
       return res.status(400).json({message: "Complete creating your account"})
     }
 
-    const secret = process.env.JWT_SECRET_KEY_ACCESS;
+    const secret = process.env.JWT_SECRET_KEY_PASSWORD + user.password;
   try {
 
     const token = await jwt.sign({
@@ -85,7 +85,7 @@ const resetThePassword = async(req , res) => {
   if(!user){
     return res.status(404).json({message: "User not found"});
   }
-  const secret = process.env.JWT_SECRET_KEY_ACCESS;
+  const secret = process.env.JWT_SECRET_KEY_PASSWORD + user.password;
 
   try {
     jwt.verify(req.params.token , secret);
