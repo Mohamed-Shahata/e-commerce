@@ -58,7 +58,6 @@ const ProductSchema = new mongoose.Schema({
           "Sports equipment","Sports clothing","camping tools",
           "Novels","Educational","Children","Biography",
           "Bedrooms","Kitchens","Offices","Living rooms"
-
         ],
       },
       size:[
