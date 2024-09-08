@@ -85,7 +85,7 @@ const resetThePassword = async(req , res) => {
   if(!user){
     return res.status(404).json({message: "User not found"});
   }
-  const secret = process.env.JWT_SECRET_KEY + user.password;
+  const secret = process.env.JWT_SECRET_KEY_ACCESS + user.password;
 
   try {
     jwt.verify(req.params.token , secret);
