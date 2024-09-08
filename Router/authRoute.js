@@ -8,7 +8,7 @@ const {
   sendNewCode,
 } = require("../Controllers/authController");
 const passport = require("passport");
-const { verifyTokenAndAutherization } = require("../middlewares/verifyToken.js");
+const { verifyToken } = require("../middlewares/verifyToken.js");
 const router = express.Router();
 
 
@@ -28,7 +28,7 @@ router.route("/login")
                       .post(loginController)
 
 router.route("/logout")
-                      .post(verifyTokenAndAutherization,logoutController)
+                      .post(verifyToken,logoutController)
 
 
 router.get("/google/register" , passport.authenticate("googleRegister" , {
