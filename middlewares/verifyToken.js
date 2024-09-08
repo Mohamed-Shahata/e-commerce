@@ -2,11 +2,11 @@ const jwt = require("jsonwebtoken");
 
 const verifyToken = async(req , res , next) => {
 
-  // تحقق من وجود الـ token قبل استبدال "Bearer "
+
   const authHeader = req.header("token");
 
   if (!authHeader) {
-    return res.status(401).json({ message: "Access denied. No token provided" });
+    return res.status(401).json({ message: "Access denied. No token provided"});
   }
 
   const token = authHeader.replace("Bearer ", "");
