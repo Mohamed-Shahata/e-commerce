@@ -1,4 +1,4 @@
-const { Schema, Types, model } = require("mongoose");
+const { Schema, Types, model, default: mongoose } = require("mongoose");
 
 const categorySchema = new Schema(
   {
@@ -15,11 +15,11 @@ const categorySchema = new Schema(
       publicId: String,
     },
     subCategoryId: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "SubCategory", 
     },
     createdBy: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },

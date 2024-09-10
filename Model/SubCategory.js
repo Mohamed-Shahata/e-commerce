@@ -15,11 +15,11 @@ const subCategorySchema = new Schema(
       publicId: String,
     },
     CategoryId: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Category", 
     },
     createdBy: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },
