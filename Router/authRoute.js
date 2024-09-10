@@ -81,12 +81,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       const accessToken = req.authInfo.accessToken
       const createRefreshToken = req.authInfo.createRefreshToken
 
-      res.status(200).json({
-        message:"Login successfully",
-        user,
-        accessToken,
-        refreshToken: createRefreshToken
-      })
+      res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
     });
   
   module.exports = router;
