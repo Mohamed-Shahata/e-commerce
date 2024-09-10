@@ -75,7 +75,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       if(!user){
         return res.status(404).json({message: "User not found"});
       }
-      user.refreshToken = req.authInfo.refreshToken
+      user.refreshToken = req.authInfo.createRefreshToken
       await user.save();
 
       const accessToken = req.authInfo.accessToken
