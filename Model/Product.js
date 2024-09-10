@@ -271,22 +271,22 @@ const ProductSchema = new mongoose.Schema(
       max: 5,
     },
     createdBy: {
-      type: Types.ObjectId,
-      ref: "user",
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
       required: true,
     },
     categoryId: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Category",
       required: true,
     },
     subCategoryId: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Subcategory",
       required: true,
     },
     brandId: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Brand",
       required: true,
     },

@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const mongoose = require("mongoose");
 
 const subCategorySchema = new Schema(
   {
