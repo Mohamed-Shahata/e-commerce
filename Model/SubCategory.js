@@ -1,22 +1,22 @@
 const { Schema, Types, model } = require("mongoose");
 
-const categorySchema = new Schema(
+const subCategorySchema = new Schema(
   {
     name: {
       type: String,
-      unique: [true, "Category Name already Exisit "],
+      unique: [true, "SubCategory Name already Exisit "],
       trim: true,
       maxLength: 50,
-      minLength: [2, "short Category Name "],
+      minLength: [2, "short SubCategory Name "],
       required: true,
     },
     image: {
       url: String,
       publicId: String,
     },
-    subCategoryId: {
+    CategoryId: {
       type: Types.ObjectId,
-      ref: "SubCategory", 
+      ref: "Category", 
     },
     createdBy: {
       type: Types.ObjectId,
@@ -26,6 +26,6 @@ const categorySchema = new Schema(
   { timestamps: true }
 );
 
-const Category = model("Category", categorySchema);
+const SubCategory = model("SubCategory", subCategorySchema);
 
-module.exports = Category
+module.exports = { SubCategory };
