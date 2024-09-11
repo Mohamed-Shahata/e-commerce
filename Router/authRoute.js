@@ -91,6 +91,11 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
         secure: true,    
         sameSite: 'Strict'
       });
+
+      res.status(200).json({
+        message: "Login successfully",
+        user,
+      })
     });
   
   module.exports = router;
