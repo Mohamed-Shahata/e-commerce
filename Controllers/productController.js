@@ -16,10 +16,7 @@ const getAllProducts = async(req , res) => {
   try {
     const pageProducts = 5;
 
-    const products = await Product.find({
-      category: { $in: ['Clothes', 'Electronics'] },
-      subCategory: { $all: ['t-shirt', 'shoes'] }
-    }).skip((pageNum - 1) * pageProducts).limit(pageProducts);
+    const products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
     return res.status(200).json({ products });
 
   } catch (err) {
