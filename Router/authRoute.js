@@ -82,7 +82,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       res.cookie("refreshToken", createRefreshToken , {
         httpOnly: true,
         secure: true,
-        sameSite: "none"
+        sameSite: "None"
       });
       
 
