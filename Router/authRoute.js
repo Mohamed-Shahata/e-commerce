@@ -58,9 +58,9 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
   });
 
   router.get('/google/login', passport.authenticate('googleLogin', {
-    scope: ['profile', 'email'],
-    accessType: 'offline',
-    prompt: 'consent'
+    scope: ['profile', 'email',"openid"],
+    // accessType: 'offline',
+    // prompt: 'consent'
   }));
   
   router.get('/google/login/callback',passport.authenticate('googleLogin', { session: false }), 
@@ -82,7 +82,6 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       res.cookie("refreshToken", createRefreshToken , {
         httpOnly: true,
         secure: true,
-        sameSite: "lax"
       })
 
       res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
