@@ -18,8 +18,6 @@ const cookieParser = require("cookie-parser");
 connectDB();
 
 //middlewares
-const cors = require('cors');
-
 app.use(cors({
   origin: 'https://osama78s.github.io',
   credentials: true
