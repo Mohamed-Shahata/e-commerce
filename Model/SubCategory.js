@@ -11,10 +11,6 @@ const subCategorySchema = new Schema(
       minLength: [2, "short SubCategory Name "],
       required: true,
     },
-    image: {
-      url: String,
-      publicId: String,
-    },
     CategoryId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category", 
