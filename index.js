@@ -17,6 +17,21 @@ const cookieParser = require("cookie-parser");
 
 connectDB();
 
+const session = require('express-session');
+
+// إعداد الجلسة
+app.use(session({
+  secret: 'yourSecretKey', 
+  resave: false, 
+  saveUninitialized: false, 
+  cookie: {
+    secure: false,
+    httpOnly: true, //       
+    maxAge: 24 * 60 * 60 * 1000 
+  }
+}));
+
+
 //middlewares
 app.use(cors({
   origin: 'https://osama78s.github.io',
