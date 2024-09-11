@@ -58,12 +58,12 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
   });
 
   router.get('/google/login', passport.authenticate('googleLogin', {
-    scope: ['profile', 'email',"openid"],
-    // accessType: 'offline',
-    // prompt: 'consent'
+    scope: ['profile', 'email'],
+    accessType: 'offline',
+    prompt: 'consent'
   }));
   
-  router.get('/google/login/callback',passport.authenticate('googleLogin', { session: false }), 
+  router.get('/google/login/callback',passport.authenticate('googleLogin', { session: true }), 
     async(req ,res) => {
       if(req.authInfo && req.authInfo.message === "No account found for this Google account"){
         return res.status(400).json({message: "No account found for this Google account"})
