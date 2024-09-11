@@ -79,13 +79,18 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       const accessToken = req.authInfo.accessToken
       const createRefreshToken = req.authInfo.createRefreshToken
 
-
-      res.status(200).json({
-        message: "Login successfully",
-        user,
-        accessToken,
-        refreshToken: createRefreshToken
-      })
+      // Send tokens in cookies with httpOnly = false
+      res.cookie('accessToken', accessToken, {
+        httpOnly: false, // Accessible via JS on the client-side
+        secure: true,    // Use HTTPS in production
+        sameSite: 'Strict'
+      });
+  
+      res.cookie('refreshToken', createRefreshToken, {
+        httpOnly: false,
+        secure: true,    
+        sameSite: 'Strict'
+      });
     });
   
   module.exports = router;
