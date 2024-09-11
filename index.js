@@ -18,11 +18,13 @@ const cookieParser = require("cookie-parser");
 connectDB();
 
 //middlewares
-app.use(cors(
-  {
-    credentials: true 
-  }
-));
+const cors = require('cors');
+
+app.use(cors({
+  origin: 'https://osama78s.github.io',
+  credentials: true
+}));
+
 
 app.use(compression());
 app.use(express.json({limit: "50mb"}));

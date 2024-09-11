@@ -63,7 +63,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     prompt: 'consent'
   }));
   
-  router.get('/google/login/callback',passport.authenticate('googleLogin', { session: true }), 
+  router.get('/google/login/callback',passport.authenticate('googleLogin', { session: false }), 
     async(req ,res) => {
       if(req.authInfo && req.authInfo.message === "No account found for this Google account"){
         return res.status(400).json({message: "No account found for this Google account"})
@@ -82,7 +82,9 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       res.cookie("refreshToken", createRefreshToken , {
         httpOnly: true,
         secure: true,
-      })
+        sameSite: "none"
+      });
+      
 
       res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
       // res.redirect(`http://localhost:5174/E-commerce/#/auth/google/login/callback`);
