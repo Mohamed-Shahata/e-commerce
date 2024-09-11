@@ -79,11 +79,9 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       const accessToken = req.authInfo.accessToken
       const createRefreshToken = req.authInfo.createRefreshToken
 
-      res.cookie("refreshToken", createRefreshToken , {
-        httpOnly: true,
-        secure: true,
-        sameSite: "None"
-      });
+      req.session.data = {
+        refreshToken: createRefreshToken
+      }
       
 
       res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
