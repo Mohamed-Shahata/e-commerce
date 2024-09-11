@@ -13,10 +13,17 @@ const cloudinary = require("cloudinary").v2;
  * @access      public
  */
 const getAllProducts = async(req , res) => {
+  const category = req.params.category;
   try {
     const pageProducts = 5;
 
-    const products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
+
+
+
+    const products = await Product.find({
+      category,
+    })
+    // .skip((pageNum - 1) * pageProducts).limit(pageProducts);
     return res.status(200).json({ products });
 
   } catch (err) {

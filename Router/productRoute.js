@@ -32,4 +32,6 @@ router.route("/:id/review")
                           .delete(verifyToken , deleteReviewProduct)
 
 
+router.route("/:category").get(getAllProducts)
+
 module.exports = router;
