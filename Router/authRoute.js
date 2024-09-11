@@ -82,11 +82,11 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
       res.cookie("refreshToken", createRefreshToken , {
         httpOnly: true,
         secure: true,
-        sameSite: "none"
+        sameSite: "lax"
       })
 
-      // res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
-      res.redirect(`http://localhost:5174/E-commerce/#/auth/google/login/callback`);
+      res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
+      // res.redirect(`http://localhost:5174/E-commerce/#/auth/google/login/callback`);
     });
   
   module.exports = router;
