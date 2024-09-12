@@ -1,4 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
+const mongoose = require("mongoose");
 
 const subCategorySchema = new Schema(
   {
@@ -19,7 +20,7 @@ const subCategorySchema = new Schema(
       ref: "Category", 
     },
     createdBy: {
-      type: Types.ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
     },
   },

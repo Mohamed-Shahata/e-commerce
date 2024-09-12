@@ -5,7 +5,6 @@ const {
   ValidationUpdateProduct,
 } = require("../Model/Product.js");
 const {handleObject} = require("../utils/handelObjectWithProduct.js");
-const { clothesCategory } = require("../utils/validatCategory.js");
 const cloudinary = require("cloudinary").v2;
 
 /**
@@ -15,111 +14,19 @@ const cloudinary = require("cloudinary").v2;
  * @access      public
  */
 const getAllProducts = async(req , res) => {
-  const { categoryId ,subCategoryId} = req.params
-  const { 
-    pageNum= 1, size, type, colors, style, minPrice, maxPrice,
-    brand, warranty, Skin_type, Activity,
-    material, Capacity, Smells, language, authors
-  } = req.query;
+  const category = req.params.category;
   try {
     const pageProducts = 5;
 
-    let products;
-    const product = await Product.find({
-      subCategoryId
-    }).populate('categoryId subCategoryId')
-    if(!category){
-      products = await Category.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
-      return res.status(200).json({ products });
-    }
 
-    //filters 
-    let filters = {};
-    switch (category) {
-      case "Shoes":
-      case "Clothes":
-      case "Electronics":
-      case "Accessories":
-      case "Furniture":
-      case "Sports":
-      case "Perfumes":
-      case "Books":
-      case "Mackup":
-      case "Bags":
-        filters.category = category;
-        if(minPrice && maxPrice){
-          filters.$or = [
-            {
-              $and:[
-                { discount: {$exists: true , $ne: 0}},
-                { newPrice: {
-                  ...(+minPrice && { $gte: +minPrice}),
-                  ...(+maxPrice && { $lte: +maxPrice})
-                  }
-                }
-              ]
-            },
-            {
-              $and:[
-                { discount: {$lte: 0  }},
-                { price: {
-                  ...(+minPrice && { $gte: +minPrice}),
-                  ...(+maxPrice && { $lte: +maxPrice})
-                  }
-                }
-              ]
-            },
-          ]
-        }
-        if(size){
-          filters.size = size;
-        }
-        if(type){
-          filters.type = type;
-        }
-        if(colors){
-          filters.colors = colors;
-        }
-        if(style){
-          filters.style = style;
-        }
-        if(brand){
-          filters.brand = brand;
-        }
-        if(subCategory){
-          filters.subCategory = subCategory;
-        }
-        if(warranty){
-          filters.warranty = warranty;
-        }
-        if(Skin_type){
-          filters.Skin_type = Skin_type;
-        }
-        if(Activity){
-          filters.Activity = Activity;
-        }
-        if(material){
-          filters.material = material;
-        }
-        if(Capacity){
-          filters.Capacity = Capacity;
-        }
-        if(Smells){
-          filters.Smells = Smells;
-        }
-        if(language){
-          filters.language = language;
-        }
-        if(authors){
-          filters.authors = authors;
-        }
-        products = await Product.find(filters).skip((pageNum - 1) * pageProducts).limit(pageProducts);
-        return res.status(200).json({ products });
 
-        default:
-          return res.status(404).json({message: "Category not found"});
-    }
-    
+
+    const products = await Product.find({
+      category,
+    })
+    // .skip((pageNum - 1) * pageProducts).limit(pageProducts);
+    return res.status(200).json({ products });
+
   } catch (err) {
     console.log("Error from getAllProducts: ", err);
     res.status(500).json({error: "Server error"});

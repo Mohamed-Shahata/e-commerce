@@ -18,11 +18,10 @@ const cookieParser = require("cookie-parser");
 connectDB();
 
 //middlewares
-app.use(cors(
-  {
-    credentials: true 
-  }
-));
+app.use(cors({
+  credentials: true
+}));
+
 
 app.use(compression());
 app.use(express.json({limit: "50mb"}));
