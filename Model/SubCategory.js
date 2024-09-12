@@ -11,10 +11,10 @@ const subCategorySchema = new Schema(
       required: true,
     },
     image: {
-      url: String,
-      publicId: String,
+      url: { type: String, required: true },
+      id: { type: String, required: true },
     },
-    CategoryId: {
+    categoryId: {
       type: Types.ObjectId,
       ref: "Category", 
     },

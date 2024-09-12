@@ -1,3 +1,4 @@
+const Category = require("../Model/Category.js");
 const {
   Product,
   ValidationCreateProduct,
@@ -9,22 +10,26 @@ const cloudinary = require("cloudinary").v2;
 
 /**
  * @description Get All Products
- * @route       /api/products
+ * @route       /api/products?
  * @method      GET
  * @access      public
  */
 const getAllProducts = async(req , res) => {
+  const { categoryId ,subCategoryId} = req.params
   const { 
-    pageNum= 1, category, size, type, colors, style, minPrice, maxPrice,
-    brand, subCategory, warranty, Skin_type, Activity,
+    pageNum= 1, size, type, colors, style, minPrice, maxPrice,
+    brand, warranty, Skin_type, Activity,
     material, Capacity, Smells, language, authors
   } = req.query;
   try {
     const pageProducts = 5;
 
     let products;
+    const product = await Product.find({
+      subCategoryId
+    }).populate('categoryId subCategoryId')
     if(!category){
-      products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
+      products = await Category.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
       return res.status(200).json({ products });
     }
 
@@ -392,7 +397,7 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteproduct,
-  reviewProduct,
-  updateReviewProduct,
-  deleteReviewProduct
+  // reviewProduct,
+  // updateReviewProduct,
+  // deleteReviewProduct
 };

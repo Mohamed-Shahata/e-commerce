@@ -1,5 +1,5 @@
 const Joi = require("joi");
-const mongoose = require("mongoose");
+const { Schema, Types } = require("mongoose");
 
 // const ProductSchema = new mongoose.Schema({
 //   name:{
@@ -115,7 +115,7 @@ const mongoose = require("mongoose");
 //           "Giorgio","Tom Forf","Jo Malone","Loewe",
 //           "Tiffany & Co","Cartier","Rolex","Pandora","Ray-Ban",
 //           "Michael Kors","Swarovski",
-          
+
 //         ],
 //       },
 //       warranty:{
@@ -208,13 +208,9 @@ const mongoose = require("mongoose");
 //   }
 // });
 
-
-
-
-
 // function Validation Create Product
 
-const ProductSchema = new mongoose.Schema(
+const ProductSchema = new Schema(
   {
     name: {
       type: String,
@@ -253,6 +249,12 @@ const ProductSchema = new mongoose.Schema(
     newPrice: {
       type: Number,
       min: 0,
+      validate: {
+        validator: function (value) {
+          return value <= this.price;
+        },
+        message: "price after discount must not exceed the original price",
+      },
     },
     quantity: {
       type: Number,
@@ -290,39 +292,35 @@ const ProductSchema = new mongoose.Schema(
       ref: "Brand",
       required: true,
     },
-
-    type: { type: mongoose.Schema.Types.ObjectId, ref: "Type" },
-    skinType: { type: mongoose.Schema.Types.ObjectId, ref: "SkinType" }, //?
-    activity: { type: mongoose.Schema.Types.ObjectId, ref: "Activity" }, // ?
-    smell: { type: mongoose.Schema.Types.ObjectId, ref: "Smells" }, // berfums
-    language: { type: mongoose.Schema.Types.ObjectId, ref: "Language" }, //book
-    author: { type: mongoose.Schema.Types.ObjectId, ref: "Author" }, // book
-
-    specifications: {
-      size: { type: String },
-      color: { type: String },
-    },
-    warranty: { type: String },
-    material: { type: String },
-    capacity: { type: String },
-
-    reviews: [
+    specifications: [
       {
-        user: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        averageRating: {
-          type: Number,
-          default: 0,
-          min: 0,
-          max: 5,
-        },
-        text: {
-          type: String,
-        },
+        key: String,
+        value: String,
       },
     ],
+    reviews: [
+      {
+        type: Types.ObjectId,
+        ref: "Review",
+      },
+    ],
+
+    // type: { type: Types.ObjectId, ref: "Type" },
+    // skinType: { type: Types.ObjectId, ref: "SkinType" }, //?
+    // activity: { type: Types.ObjectId, ref: "Activity" }, // ?
+    // smell: { type: Types.ObjectId, ref: "Smells" }, // berfums
+    // language: { type: Types.ObjectId, ref: "Language" }, //book
+    // author: { type: Types.ObjectId, ref: "Author" }, // book
+
+    // specifications: {
+    //   size: { type: String },
+    //   color: { type: String },
+    // },
+    // warranty: { type: String },
+    // material: { type: String },
+    // capacity: { type: String },
+
+
   },
   { timestamps: true }
 );
@@ -335,10 +333,10 @@ const ValidationCreateProduct = (obj) => {
     discount: Joi.number().min(0),
     quantity: Joi.number().min(1),
     category: Joi.string().required(),
-    offer: Joi.boolean()
-  })
+    offer: Joi.boolean(),
+  });
   return schema.validate(obj);
-}
+};
 
 // function Validation Update Product
 const ValidationUpdateProduct = (obj) => {
@@ -349,15 +347,15 @@ const ValidationUpdateProduct = (obj) => {
     discount: Joi.number().min(0),
     quantity: Joi.number().min(1),
     category: Joi.string(),
-    offer: Joi.boolean()
-  })
+    offer: Joi.boolean(),
+  });
   return schema.validate(obj);
-}
+};
 
-const Product = mongoose.model("Product" , ProductSchema);
+const Product = mongoose.model("Product", ProductSchema);
 
 module.exports = {
   Product,
   ValidationCreateProduct,
-  ValidationUpdateProduct
-}
+  ValidationUpdateProduct,
+};
