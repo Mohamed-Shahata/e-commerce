@@ -1,3 +1,4 @@
+const Category = require("../Model/Category.js");
 const {
   Product,
   ValidationCreateProduct,
@@ -8,7 +9,7 @@ const cloudinary = require("cloudinary").v2;
 
 /**
  * @description Get All Products
- * @route       /api/products
+ * @route       /api/products?
  * @method      GET
  * @access      public
  */
@@ -303,7 +304,7 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteproduct,
-  reviewProduct,
-  updateReviewProduct,
-  deleteReviewProduct
+  // reviewProduct,
+  // updateReviewProduct,
+  // deleteReviewProduct
 };

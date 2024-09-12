@@ -11,8 +11,12 @@ const subCategorySchema = new Schema(
       minLength: [2, "short SubCategory Name "],
       required: true,
     },
-    CategoryId: {
-      type: mongoose.Schema.Types.ObjectId,
+    image: {
+      url: { type: String, required: true },
+      id: { type: String, required: true },
+    },
+    categoryId: {
+      type: Types.ObjectId,
       ref: "Category", 
     },
     createdBy: {

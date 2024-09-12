@@ -52,9 +52,22 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
     await user.save();
 
     const accessToken = req.authInfo.accessToken
-    const createRefreshToken = req.authInfo.refreshToken
+    const refreshToken = req.authInfo.refreshToken
 
-    res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
+        // Send tokens in cookies with httpOnly = false
+        res.cookie('accessToken', accessToken, {
+          httpOnly: false, // Accessible via JS on the client-side
+          secure: true,    // Use HTTPS in production
+          sameSite: 'Strict'
+        });
+    
+        res.cookie('refreshToken', refreshToken, {
+          httpOnly: false,
+          secure: true,    
+          sameSite: 'Strict'
+        });
+    
+
   });
 
   router.get('/google/login', passport.authenticate('googleLogin', {
