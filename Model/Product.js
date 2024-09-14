@@ -278,17 +278,17 @@ const ProductSchema = new Schema(
       required: true,
     },
     categoryId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "Category",
       required: true,
     },
     subCategoryId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "Subcategory",
       required: true,
     },
     brandId: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "Brand",
       required: true,
     },
@@ -319,8 +319,6 @@ const ProductSchema = new Schema(
     // warranty: { type: String },
     // material: { type: String },
     // capacity: { type: String },
-
-
   },
   { timestamps: true }
 );

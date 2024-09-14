@@ -1,5 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
-const mongoose = require("mongoose");
+const { default: slugify } = require("slugify");
 
 const subCategorySchema = new Schema(
   {
@@ -11,6 +11,11 @@ const subCategorySchema = new Schema(
       minLength: [2, "short SubCategory Name "],
       required: true,
     },
+    slug: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
     image: {
       url: { type: String, required: true },
       id: { type: String, required: true },
@@ -20,12 +25,26 @@ const subCategorySchema = new Schema(
       ref: "Category", 
     },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
     },
   },
   { timestamps: true }
 );
+
+subCategorySchema.pre("save", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+  }
+  next();
+});
+
+subCategorySchema.pre("updateMany", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+  }
+  next();
+});
 
 const SubCategory = model("SubCategory", subCategorySchema);
 
