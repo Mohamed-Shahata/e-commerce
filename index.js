@@ -44,6 +44,13 @@ app.use("/password" , passwordRoute);
 app.use("/api/products" , productsRoute);
 app.use("/api" , payment);
 
+// Global Error
+app.use((err, req, res, next) => {
+  const { status, message, stack } = err;
+  res
+    .status(status || 500)
+    .json(message, ...(process.env.MODE === "development" && { stack }));
+});
 //listen server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT , () => console.log("server is live"));

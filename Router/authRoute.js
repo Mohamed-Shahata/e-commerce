@@ -104,6 +104,7 @@ router.get("/google/register/callback" , passport.authenticate("googleRegister" 
         secure: true,    
         sameSite: 'Strict'
       });
+      // res.redirect(`https://osama78s.github.io/E-commerce/#/auth/google/login/callback?accessToken=${accessToken}&refreshToken=${createRefreshToken}&email=${user.email}&name=${user.name}&image=${user.image}`);
 
       res.status(200).json({
         message: "Login successfully",
