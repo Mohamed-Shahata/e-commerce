@@ -304,7 +304,7 @@ module.exports = {
   createProduct,
   updateProduct,
   deleteproduct,
-  // reviewProduct,
-  // updateReviewProduct,
-  // deleteReviewProduct
+  reviewProduct,
+  updateReviewProduct,
+  deleteReviewProduct
 };
