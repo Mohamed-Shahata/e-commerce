@@ -1,4 +1,5 @@
 const { Schema, model } = require("mongoose");
+const { default: slugify } = require("slugify");
 
 const brandSchema = new Schema(
   {
@@ -32,6 +33,21 @@ const brandSchema = new Schema(
   },
   { timestamps: true, strictQuery: true } // filter only with this schema fields
 );
+
+brandSchema.pre("save", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+    
+  }
+  next();
+});
+
+brandSchema.pre("updateMany", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+  }
+  next();
+});
 
 const Brand = model("Brand" , brandSchema);
 
