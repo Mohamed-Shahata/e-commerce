@@ -1,64 +1,65 @@
 const Joi = require("joi");
-const mongoose = require("mongoose");
+const { Schema, model } = require("mongoose");
 
-const UserSchema = new mongoose.Schema({
-  firstName:{
+const UserSchema = new Schema({
+  firstName: {
     type: String,
     trim: true,
   },
-  lastName:{
+  lastName: {
     type: String,
     trim: true,
   },
-  email:{
+  email: {
     type: String,
     required: true,
     trim: true,
     unique: true,
     minlenghth: 1,
-    maxlenght: 100
+    maxlenght: 100,
   },
-  gender:{
+  gender: {
     type: String,
   },
-  vereificationCode:{
-    type: String
+  vereificationCode: {
+    type: String,
   },
-  registed:{
+  registed: {
     type: Boolean,
-    default: false
+    default: false,
   },
-  password:{
+  password: {
     type: String,
     trim: true,
   },
-  image:{
+  image: {
     type: String,
-    default: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png"
+    default:
+      "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
   },
-  imagePublicId:{
+  imagePublicId: {
     type: String,
-    default: ""
+    default: "",
   },
-  isAdmin:{
+  isAdmin: {
     type: Boolean,
-    default: false
+    default: false,
   },
-  refreshToken:{
+  refreshToken: {
     type: String,
-    default: ""
+    default: "",
   },
-  createdAt:{
+  createdAt: {
     type: Date,
-    default: Date.now()
-  }
+    default: Date.now(),
+  },
 });
 
 // function Validation Register User
 const ValidationRegisterUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
-    image: Joi.string().trim()
+    image: Joi.string().trim(),
   });
 
   return schema.validate(obj);
@@ -68,7 +69,7 @@ const ValidationRegisterUser = (obj) => {
 const ValidationLoginUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).required().email(),
-    password: Joi.string().trim().min(8).max(50).required()
+    password: Joi.string().trim().min(8).max(50).required(),
   });
 
   return schema.validate(obj);
@@ -78,18 +79,17 @@ const ValidationLoginUser = (obj) => {
 const ValidationUpdateUser = (obj) => {
   const schema = Joi.object({
     email: Joi.string().trim().min(1).max(100).email(),
-    image: Joi.string().trim()
+    image: Joi.string().trim(),
   });
 
   return schema.validate(obj);
 };
 
+const User = model("User", UserSchema);
 
-const User = mongoose.model("User" , UserSchema);
-
-module.exports = { 
+module.exports = {
   User,
   ValidationRegisterUser,
   ValidationLoginUser,
-  ValidationUpdateUser
+  ValidationUpdateUser,
 };

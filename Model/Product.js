@@ -1,7 +1,8 @@
 const Joi = require("joi");
 const { Schema, Types } = require("mongoose");
+const { default: slugify } = require("slugify");
 
-// const ProductSchema = new mongoose.Schema({
+// const ProductSchema = new Schema({
 //   name:{
 //     type: String,
 //     maxlenght: 50,
@@ -176,7 +177,7 @@ const { Schema, Types } = require("mongoose");
 //   reviews:[
 //     {
 //       user:{
-//         type: mongoose.Schema.Types.ObjectId,
+//         type: Schema.Types.ObjectId,
 //         ref: "User",
 //       },
 //       averageRating:{
@@ -273,7 +274,7 @@ const ProductSchema = new Schema(
       max: 5,
     },
     createdBy: {
-      type: mongoose.Schema.Types.ObjectId,
+      type: Schema.Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -323,6 +324,21 @@ const ProductSchema = new Schema(
   { timestamps: true }
 );
 
+ProductSchema.pre("save", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+    
+  }
+  next();
+});
+
+ProductSchema.pre("updateMany", function (next) {
+  if (this._update.name) {
+    this._update.slug = slugify(this.name, { lower: true });
+  }
+  next();
+});
+
 const ValidationCreateProduct = (obj) => {
   const schema = Joi.object({
     name: Joi.string().min(2).max(50).required().trim(),
@@ -350,7 +366,7 @@ const ValidationUpdateProduct = (obj) => {
   return schema.validate(obj);
 };
 
-const Product = mongoose.model("Product", ProductSchema);
+const Product = model("Product", ProductSchema);
 
 module.exports = {
   Product,
