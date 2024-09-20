@@ -5,8 +5,7 @@
   "scripts": {
     "dev": "nodemon index.js",
     "start": "node index.js",
-    "postinstall": "npm install --omit=dev",
-    "production": "npm run postinstall && node index.js"
+    "production": "npm install --omit=dev && node index.js"
   },
   "keywords": [],
   "author": "",
