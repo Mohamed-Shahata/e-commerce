@@ -6,6 +6,9 @@ const transporter = nodemailer.createTransport({
     user: process.env.USER_EMAIL,
     pass: process.env.PASS_USER_EMAIL,
   },
+  tls: {
+    rejectUnauthorized: false, // Add this to accept self-signed certificates
+  },
 });
 
 const sendVerificationCode = async (email, code) => {
