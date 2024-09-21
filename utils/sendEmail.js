@@ -1,29 +1,28 @@
 const nodemailer = require("nodemailer");
 
-const trnasporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
   service: "gmail",
-  auth:{
+  auth: {
     user: process.env.USER_EMAIL,
-    pass: process.env.PASS_USER_EMAIL
-  }
+    pass: process.env.PASS_USER_EMAIL,
+  },
 });
 
-const sendVerificationCode = (email , code) => {
+const sendVerificationCode = async (email, code) => {
   const mailOptions = {
     from: process.env.USER_EMAIL,
     to: email,
     subject: "Confirm your account",
-    text: `using this code '${code}' to activate your account`
+    text: `using this code '${code}' to activate your account`,
+  };
+  try {
+    const info = await transporter.sendMail(mailOptions);
+    console.log("Email sent: " + info.response);
+  } catch (err) {
+    console.error("Error sending email: ", err);
   }
-  return trnasporter.sendMail(mailOptions , (err , success) => {
-    if(err){
-      console.log(err);
-    }else{
-      console.log("Email sent: " + success.response);
-    }
-  })
 };
 
 module.exports = {
-  sendVerificationCode
-}
+  sendVerificationCode,
+};
