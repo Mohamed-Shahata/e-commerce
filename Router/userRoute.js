@@ -1,27 +1,27 @@
-const express = require("express");
-const {
+import { Router } from "express";
+import {
   getAllUser,
   getSingleUser,
   updateUser,
-  deleteUser
-} = require("../Controllers/userController");
-const {
+  deleteUser,
+} from "../Controllers/userController.js";
+import {
   verifyToken,
   verifyTokenAndAdmin,
-  verifyTokenAndAutherization
-} = require("../middlewares/verifyToken");
-const router = express.Router();
-const upload = require("../middlewares/uploadImage.js");
+  verifyTokenAndAutherization,
+} from "../middlewares/verifyToken.js";
 
+const router = Router();
+import { upload } from "../middlewares/uploadImage.middleware.js";
 
 // /api/users
-router.get("/" , verifyTokenAndAdmin ,  getAllUser);
+router.get("/", verifyTokenAndAdmin, getAllUser);
 
 // /api/users/id
-router.route("/:id")
-                  .get(verifyToken , getSingleUser)
-                  .patch(verifyTokenAndAutherization , upload.single("image") , updateUser)
-                  .delete(verifyTokenAndAutherization , deleteUser)
+router
+  .route("/:id")
+  .get(verifyToken, getSingleUser)
+  .patch(verifyTokenAndAutherization, upload.single("image"), updateUser)
+  .delete(verifyTokenAndAutherization, deleteUser);
 
-
-module.exports = router;
+export default router;

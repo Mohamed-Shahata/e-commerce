@@ -1,21 +1,37 @@
-import { executeQuery } from "../handler/exeute.handler.js";
-import { filterOne } from "../middlewares/filterCategory.middleware.js";
+import { executeQuery } from "../handler/execute.handler.js";
+import { attachImage } from "../middlewares/attachImage.middleware.js";
+import {
+  attachCategoryId,
+  filterSubCategories,
+} from "../middlewares/filterSubCategory.middleware.js";
 import {
   attachAddQuery,
   attachDeleteQuery,
   attachFindQuery,
   attachUpdateQuery,
 } from "../middlewares/query.middleware.js";
+import { upload } from "../middlewares/uploadImage.middleware.js";
+import { verifyToken } from "../middlewares/verifyToken.js";
 import { SubCategory } from "../Model/SubCategory.js";
+import { Router } from "express";
+import { productRouter } from "./product.routes.js";
 
-const router = express.Router({ mergeParams: true });
+const router = Router({ mergeParams: true });
+
+router.use('/:subCategorySlug/product', productRouter);
 
 router
   .route("/")
-  .get(attachFindQuery(SubCategory),filterSubCategories(), executeQuery())
+  .get(
+    verifyToken(["admin"]),
+    attachFindQuery(SubCategory),
+    filterSubCategories(),
+    executeQuery()
+  )
   .post(
-    verifyTokenAndAdmin,
-    // upload.array("images"),
+    verifyToken(["admin"]),
+    upload.single("image"),
+    attachImage("image"),
     attachCategoryId(),
     attachAddQuery(SubCategory),
     executeQuery({ status: 201 })
@@ -24,20 +40,23 @@ router
   .route("/:subCategorySlug")
   .get(
     attachCategoryId(),
-    attachFindQuery(SubCategory),
     filterSubCategories(),
-    // filterOne({ feildName: "slug", param: "subCategorySlug" }),
+    attachFindQuery(SubCategory),
     executeQuery()
   )
   .put(
-    attachUpdateQuery(SubCategory),
+    upload.single("image"),
+    attachImage("image"),
     attachCategoryId(),
     filterSubCategories(),
+    attachUpdateQuery(SubCategory),
     executeQuery()
   )
   .delete(
-    attachDeleteQuery(SubCategory),
     attachCategoryId(),
     filterSubCategories(),
+    attachDeleteQuery(SubCategory),
     executeQuery()
   );
+
+export { router as subCategoryRouter };

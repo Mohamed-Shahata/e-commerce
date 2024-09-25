@@ -1,32 +1,121 @@
-const Category = require("../Model/Category.js");
-const {
-  Product,
-  ValidationCreateProduct,
-  ValidationUpdateProduct,
-} = require("../Model/Product.js");
-const {handleObject} = require("../utils/handelObjectWithProduct.js");
-const cloudinary = require("cloudinary").v2;
+import {
+  Product, ValidationCreateProduct, ValidationUpdateProduct,
+} from "../Model/Product.js";
+
+import { handleObject } from "../utils/handelObjectWithProduct.js";
+
+import { clothesCategory } from "../utils/validatCategory.js";
+
+import { v2 as cloudinary } from "cloudinary";
 
 /**
  * @description Get All Products
- * @route       /api/products?
+ * @route       /api/products
  * @method      GET
  * @access      public
  */
 const getAllProducts = async(req , res) => {
-  const category = req.params.category;
+  const { 
+    pageNum= 1, category, size, type, colors, style, minPrice, maxPrice,
+    brand, subCategory, warranty, Skin_type, Activity,
+    material, Capacity, Smells, language, authors
+  } = req.query;
   try {
     const pageProducts = 5;
 
+    let products;
+    if(!category){
+      products = await Product.find().skip((pageNum - 1) * pageProducts).limit(pageProducts);
+      return res.status(200).json({ products });
+    }
 
+    //filters 
+    let filters = {};
+    switch (category) {
+      case "Shoes":
+      case "Clothes":
+      case "Electronics":
+      case "Accessories":
+      case "Furniture":
+      case "Sports":
+      case "Perfumes":
+      case "Books":
+      case "Mackup":
+      case "Bags":
+        filters.category = category;
+        if(minPrice && maxPrice){
+          filters.$or = [
+            {
+              $and:[
+                { discount: {$exists: true , $ne: 0}},
+                { newPrice: {
+                  ...(+minPrice && { $gte: +minPrice}),
+                  ...(+maxPrice && { $lte: +maxPrice})
+                  }
+                }
+              ]
+            },
+            {
+              $and:[
+                { discount: {$lte: 0  }},
+                { price: {
+                  ...(+minPrice && { $gte: +minPrice}),
+                  ...(+maxPrice && { $lte: +maxPrice})
+                  }
+                }
+              ]
+            },
+          ]
+        }
+        if(size){
+          filters.size = size;
+        }
+        if(type){
+          filters.type = type;
+        }
+        if(colors){
+          filters.colors = colors;
+        }
+        if(style){
+          filters.style = style;
+        }
+        if(brand){
+          filters.brand = brand;
+        }
+        if(subCategory){
+          filters.subCategory = subCategory;
+        }
+        if(warranty){
+          filters.warranty = warranty;
+        }
+        if(Skin_type){
+          filters.Skin_type = Skin_type;
+        }
+        if(Activity){
+          filters.Activity = Activity;
+        }
+        if(material){
+          filters.material = material;
+        }
+        if(Capacity){
+          filters.Capacity = Capacity;
+        }
+        if(Smells){
+          filters.Smells = Smells;
+        }
+        if(language){
+          filters.language = language;
+        }// product model 
+        if(authors){
+          filters.authors = authors;
+        }
+        products = await Product.find(filters).skip((pageNum - 1) * pageProducts).limit(pageProducts);
+        return res.status(200).json({ products });
 
-
-    const products = await Product.find({
-      category,
-    })
-    // .skip((pageNum - 1) * pageProducts).limit(pageProducts);
-    return res.status(200).json({ products });
-
+        default:
+          return res.status(404).json({message: "Category not found"});
+    }
+    
   } catch (err) {
     console.log("Error from getAllProducts: ", err);
     res.status(500).json({error: "Server error"});
@@ -298,7 +387,7 @@ const deleteReviewProduct = async(req ,res) => {
 
 
 
-module.exports = {
+export {
   getAllProducts,
   getSingleProducts,
   createProduct,
