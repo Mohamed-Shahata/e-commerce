@@ -17,7 +17,11 @@ import { Router } from "express";
 import { productRouter } from "./product.routes.js";
 
 const router = Router({ mergeParams: true });
-
+/**
+ * Route handling products under a specific subCategory.
+ * Delegates requests to product router.
+ * @route /:subCategorySlug/product
+ */
 router.use('/:subCategorySlug/product', productRouter);
 
 router

@@ -15,14 +15,18 @@ import { subCategoryRouter } from "./SubCategory..routes.js";
 
 const router = Router();
 
-router.use('/:categorySlug/sub-category',subCategoryRouter)
+/**
+ * Route handling subcategories under a specific category.
+ * Delegates requests to subcategory router.
+ * @route /:categorySlug/sub-category
+ */
+router.use("/:categorySlug/sub-category", subCategoryRouter);
 
 router
   .route("/")
   .get(
     verifyToken(["admin"]),
     attachFindQuery(Category),
-
     executeQuery()
   )
   .post(
@@ -30,7 +34,6 @@ router
     // upload.array("images"),
     upload.single("image"),
     attachImage("image"),
-    //  createProduct
     attachAddQuery(Category),
     executeQuery({ status: 201 })
   );
