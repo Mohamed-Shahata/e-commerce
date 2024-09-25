@@ -1,10 +1,8 @@
-const express = require("express");
-const {
-  verifyToken,
-  verifyTokenAndAdmin
-  } = require("../middlewares/verifyToken");
-const upload = require("../middlewares/uploadImage");
-const {
+import { Router } from "express";
+import { verifyToken, verifyTokenAndAdmin } from "../middlewares/verifyToken.js";
+
+import { upload } from "../middlewares/uploadImage.middleware.js";
+import {
   createProduct,
   updateProduct,
   deleteproduct,
@@ -12,26 +10,25 @@ const {
   getSingleProducts,
   reviewProduct,
   updateReviewProduct,
-  deleteReviewProduct
-} = require("../Controllers/productController");
-const router = express.Router();
+  deleteReviewProduct,
+} from "../Controllers/productController.js";
+const router = Router();
 
+router
+  .route("/")
+  .get(getAllProducts)
+  .post(verifyTokenAndAdmin, upload.array("images"), createProduct);
 
-router.route("/")
-                .get( getAllProducts )
-                .post(verifyTokenAndAdmin , upload.array("images") , createProduct )
+router
+  .route("/:id")
+  .get(verifyToken, getSingleProducts)
+  .put(verifyTokenAndAdmin, upload.array("images"), updateProduct)
+  .delete(verifyTokenAndAdmin, deleteproduct);
 
-router.route("/:id")
-                  .get(verifyToken , getSingleProducts)
-                  .put(verifyTokenAndAdmin , upload.array("images") , updateProduct)
-                  .delete(verifyTokenAndAdmin , deleteproduct)
+router
+  .route("/:id/review")
+  .post(verifyToken, reviewProduct)
+  .put(verifyToken, updateReviewProduct)
+  .delete(verifyToken, deleteReviewProduct);
 
-router.route("/:id/review")
-                          .post(verifyToken , reviewProduct)
-                          .put(verifyToken , updateReviewProduct)
-                          .delete(verifyToken , deleteReviewProduct)
-
-
-router.route("/:category").get(getAllProducts)
-
-module.exports = router;
+export default router;

@@ -1,14 +1,11 @@
-const express = require("express");
-const { payment } = require("../Controllers/paymentController");
-const router = express.Router();
+import { Router } from "express";
+import { payment } from "../Controllers/paymentController.js";
+const router = Router();
 
+router.post("/pay", payment);
 
-
-router.post("/pay" , payment);
-
-router.post("/payment/callback" , (req , res) => {
-  res.send("Payment processed")
+router.post("/payment/callback", (req, res) => {
+  res.send("Payment processed");
 });
 
-
-module.exports = router;
+export default router;
