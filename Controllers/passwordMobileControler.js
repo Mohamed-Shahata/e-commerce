@@ -55,7 +55,7 @@ const sendForgotPasswordMobile = async(req , res) => {
 
     res.status(200).json({
       message: "Link for reset your password has been send to your email",
-      userId: user._id
+      email: user.email
     });
 
   } catch (err) {
@@ -83,7 +83,9 @@ const verifyCode = async(req ,res) => {
         if(code != user.codeRestPassword){
             return res.status(400).json({message: "code is wrong"});
         }
-        res.status(200).json({message: "Code is successfully", userId: user._id});
+        user.codeRestPassword = null;
+        await user.save();
+        res.status(200).json({message: "Code is successfully", email: user.email});
     } catch (err) {
         console.log("error resetThePassword: " , err);
         res.status(500).json({error: "Server error"});
@@ -95,14 +97,13 @@ const resetThePasswordMobile = async(req , res) => {
     return res.status(404).json({message: "User not found"});
   }
 
-  if(user.codeRestPassword === null){
-    return res.status(400).json({message: "Code is wrong"})
+  if(user.codeRestPassword !== null){
+    return res.status(400).json({message: "Enter the code from your gmail"})
   }
 
   try {
     const salt = await bcryptjs.genSalt(10);
     user.password = await bcryptjs.hash(req.body.password , salt);
-    user.codeRestPassword = null;
     await user.save();
 
 
