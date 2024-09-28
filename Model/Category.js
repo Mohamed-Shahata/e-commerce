@@ -1,10 +1,5 @@
-<<<<<<< HEAD
-const { Schema, Types, model } = require("mongoose");
-// const { default: slugify } = require("slugify");
-=======
 import { Schema, Types, model } from "mongoose";
 import slugify from "slugify";
->>>>>>> c3be5061bc9dc70aa8a126f29177a0fe0b44a23c
 
 const categorySchema = new Schema(
   {
