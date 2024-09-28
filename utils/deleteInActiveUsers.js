@@ -1,5 +1,5 @@
-const { User } = require("../Model/User.js");
-const cron = require("node-cron");
+import { User } from "../Model/User.js";
+import { schedule } from "node-cron";
 
 /**
  * @description Delete Users In Active
@@ -20,7 +20,7 @@ const deleteInActiveUsers = async() => {
   }
 };
 
-cron.schedule("0 0 * * *" , () => {
+schedule("0 0 * * *" , () => {
   console.log("deleted users inactvation");
   deleteInActiveUsers();
 });

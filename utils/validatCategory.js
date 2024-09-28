@@ -1,14 +1,13 @@
-const clothesCategory = async(obj) => {
+const clothesCategory = async (obj) => {
   try {
-    if(obj.size === null){
-        return Error().message("required");
-      }
+    if (obj.size === null) {
+      return Error().message("required");
+    }
   } catch (error) {
-    console.log("Error Clothes")
+    console.log("Error Clothes");
   }
 };
 
-
-module.exports = {
-  clothesCategory
-}
+export {
+  clothesCategory,
+};

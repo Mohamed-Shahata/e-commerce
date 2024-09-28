@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 const Joi = require("joi");
 const { Schema, Types, model } = require("mongoose");
 // const { default: slugify } = require("slugify");
@@ -210,6 +211,11 @@ const { Schema, Types, model } = require("mongoose");
 // });
 
 // function Validation Create Product
+=======
+import joi from "joi";
+import { model, Schema, Types } from "mongoose";
+import slugify from "slugify";
+>>>>>>> c3be5061bc9dc70aa8a126f29177a0fe0b44a23c
 
 const ProductSchema = new Schema(
   {
@@ -220,6 +226,11 @@ const ProductSchema = new Schema(
       required: true,
       trim: true,
     },
+    slug: {
+      type: String,
+      unique: true,
+      trim: true,
+    },
     description: {
       type: String,
       minlength: 2,
@@ -228,15 +239,10 @@ const ProductSchema = new Schema(
       trim: true,
     },
     imgCover: {
-      id: { type: String, unique: true, required: true },
-      url: { type: String, required: true },
+      type: Types.ObjectId,
+      ref: "image",
+      required: false,
     },
-    images: [
-      {
-        publicId: { type: String, unique: true, required: true },
-        url: { type: String, required: true },
-      },
-    ],
     price: {
       type: Number,
       required: true,
@@ -274,7 +280,7 @@ const ProductSchema = new Schema(
       max: 5,
     },
     createdBy: {
-      type: Schema.Types.ObjectId,
+      type: Types.ObjectId,
       ref: "User",
       required: true,
     },
@@ -285,13 +291,13 @@ const ProductSchema = new Schema(
     },
     subCategoryId: {
       type: Types.ObjectId,
-      ref: "Subcategory",
+      ref: "SubCategory",
       required: true,
     },
     brandId: {
       type: Types.ObjectId,
       ref: "Brand",
-      required: true,
+      required: false,
     },
     specifications: [
       {
@@ -305,71 +311,103 @@ const ProductSchema = new Schema(
         ref: "Review",
       },
     ],
-
-    // type: { type: Types.ObjectId, ref: "Type" },
-    // skinType: { type: Types.ObjectId, ref: "SkinType" }, //?
-    // activity: { type: Types.ObjectId, ref: "Activity" }, // ?
-    // smell: { type: Types.ObjectId, ref: "Smells" }, // berfums
-    // language: { type: Types.ObjectId, ref: "Language" }, //book
-    // author: { type: Types.ObjectId, ref: "Author" }, // book
-
-    // specifications: {
-    //   size: { type: String },
-    //   color: { type: String },
-    // },
-    // warranty: { type: String },
-    // material: { type: String },
-    // capacity: { type: String },
   },
-  { timestamps: true }
+  { timestamps: true, toJSON: { virtuals: true }, toObject: { virtuals: true } }
 );
 
+ProductSchema.virtual("images", {
+  ref: "imagesOnProduct",
+  localField: "_id",
+  foreignField: "product_id",
+});
+
+ProductSchema.pre(/^find/, async function (next) {
+  this.populate("images", "-product_id");
+  this.populate("imgCover", "path");
+  this.populate("createdBy", "email");
+  this.populate("categoryId", "name");
+  this.populate("subCategoryId", "name");
+
+  next();
+});
+
 ProductSchema.pre("save", function (next) {
-  if (this._update.name) {
-    this._update.slug = slugify(this.name, { lower: true });
-    
+  if (this.isModified("name") || this.isNew) {
+    this.slug = slugify(this.name, { lower: true });
   }
   next();
 });
 
 ProductSchema.pre("updateMany", function (next) {
+  console.log(this._update);
+
   if (this._update.name) {
     this._update.slug = slugify(this.name, { lower: true });
   }
   next();
 });
 
+ProductSchema.pre(/delete/i, async function (next) {
+  console.log(this._conditions);
+  const productToBeDeleted = await Product.find(this._conditions);
+  if (!productToBeDeleted) return next();
+  // delete image doc from image model
+  await model("image").findByIdAndDelete(productToBeDeleted.imgCover);
+
+  next();
+});
+
+ProductSchema.pre(/delete/i, async function (next) {
+  console.log(this._conditions);
+  const productToBeDeleted = await Product.find(this._conditions);
+  if (!productToBeDeleted) return next();
+
+  await Promise.all(
+    // delete images docs from image model
+    productToBeDeleted.images.map(async (image) => {
+      await model("imagesOnProduct").findByIdAndDelete(image._id);
+    })
+  );
+  next();
+});
+
+ProductSchema.pre(/update/i, async function (next) {
+  console.log(this._conditions);
+  const productToBeDeleted = await Product.find(this._conditions);
+  if (!productToBeDeleted) return next();
+  // delete image doc from image model
+  await model("image").findByIdAndDelete(productToBeDeleted.imgCover);
+
+  next();
+});
+
 const ValidationCreateProduct = (obj) => {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(50).required().trim(),
-    description: Joi.string().min(2).max(1000).required().trim(),
-    price: Joi.number().min(0).required(),
-    discount: Joi.number().min(0),
-    quantity: Joi.number().min(1),
-    category: Joi.string().required(),
-    offer: Joi.boolean(),
+  const schema = object({
+    name: joi.string().min(2).max(50).required().trim(),
+    description: joi.string().min(2).max(1000).required().trim(),
+    price: joi.number().min(0).required(),
+    discount: joi.number().min(0),
+    quantity: joi.number().min(1),
+    category: joi.string().required(),
+    offer: joi.boolean(),
   });
   return schema.validate(obj);
 };
 
 // function Validation Update Product
 const ValidationUpdateProduct = (obj) => {
-  const schema = Joi.object({
-    name: Joi.string().min(2).max(50).trim(),
-    description: Joi.string().min(2).max(1000).trim(),
-    price: Joi.number().min(0),
-    discount: Joi.number().min(0),
-    quantity: Joi.number().min(1),
-    category: Joi.string(),
-    offer: Joi.boolean(),
+  const schema = object({
+    name: joi.string().min(2).max(50).trim(),
+    description: joi.string().min(2).max(1000).trim(),
+    price: joi.number().min(0),
+    discount: joi.number().min(0),
+    quantity: joi.number().min(1),
+    category: joi.string(),
+    offer: joi.boolean(),
   });
   return schema.validate(obj);
 };
 
 const Product = model("Product", ProductSchema);
 
-module.exports = {
-  Product,
-  ValidationCreateProduct,
-  ValidationUpdateProduct,
-};
+export { Product, ValidationCreateProduct, ValidationUpdateProduct };
