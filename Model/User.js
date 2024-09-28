@@ -16,8 +16,8 @@ const UserSchema = new Schema(
       required: true,
       trim: true,
       unique: true,
-      minlenghth: 1,
-      maxlenght: 100,
+      minlength: 1,
+      maxlength: 100,
     },
     password: {
       type: String,
@@ -27,118 +27,65 @@ const UserSchema = new Schema(
       type: String,
     },
     birthDate: Date,
-    vereificationCode: {
+    verificationCode: {
       type: String,
     },
-    registed: {
+    codeRestPassword: {
+      type: String,
+    },
+    registered: {
       type: Boolean,
       default: false,
     },
     profilePic: {
       type: String,
-      default:
-        "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
+      default: "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
     },
-    // imagePublicId: {
-    //   type: String,
-    //   default: "",
-    // },
-    // isAdmin: {
-    //   type: Boolean,
-    //   default: false,
-    // },
+    imagePublicId: {
+      type: String,
+      default: "",
+    },
+    isAdmin: {
+      type: Boolean,
+      default: false,
+    },
     refreshToken: {
       type: String,
       default: "",
     },
   },
-<<<<<<< HEAD
-  lastName: {
-    type: String,
-    trim: true,
-  },
-  email: {
-    type: String,
-    required: true,
-    trim: true,
-    unique: true,
-    minlenghth: 1,
-    maxlenght: 100,
-  },
-  gender: {
-    type: String,
-  },
-  vereificationCode: {
-    type: String,
-  },
-  codeRestPassword:{
-    type: String
-  },
-  registed: {
-    type: Boolean,
-    default: false,
-  },
-  password: {
-    type: String,
-    trim: true,
-  },
-  image: {
-    type: String,
-    default:
-      "https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG-Image.png",
-  },
-  imagePublicId: {
-    type: String,
-    default: "",
-  },
-  isAdmin: {
-    type: Boolean,
-    default: false,
-  },
-  refreshToken: {
-    type: String,
-    default: "",
-  },
-  createdAt: {
-    type: Date,
-    default: Date.now(),
-  },
-});
-=======
   {
     timestamps: true,
     discriminatorKey: "role",
   }
 );
->>>>>>> c3be5061bc9dc70aa8a126f29177a0fe0b44a23c
 
-// function Validation Register User
+// Function Validation Register User
 const ValidationRegisterUser = (obj) => {
   const schema = joi.object({
     firstName: joi.string().trim().min(1).max(100).required(),
     lastName: joi.string().trim().min(1).max(100).required(),
     gender: joi.string().valid("male", "female").required(),
     email: joi
-    .string()
-    .email({
-      maxDomainSegments: 2,
-      tlds: { allow: ["com", "pro"] },
-    })
-    .lowercase()
-    .trim()
-    .min(1)
-    .max(100)
-    .required(),
+      .string()
+      .email({
+        maxDomainSegments: 2,
+        tlds: { allow: ["com", "pro"] },
+      })
+      .lowercase()
+      .trim()
+      .min(1)
+      .max(100)
+      .required(),
     password: joi.string().trim().min(8).max(50).required(),
     role: joi.string().valid("admin", "client", "seller").required(),
-
     image: joi.string().trim(),
   });
 
   return schema.validate(obj);
 };
 
-// function Validation Login User
+// Function Validation Login User
 const ValidationLoginUser = (obj) => {
   const schema = joi.object({
     email: joi.string().trim().min(1).max(100).required().email(),
@@ -148,7 +95,7 @@ const ValidationLoginUser = (obj) => {
   return schema.validate(obj);
 };
 
-// function Validation Update User
+// Function Validation Update User
 const ValidationUpdateUser = (obj) => {
   const schema = joi.object({
     email: joi.string().trim().min(1).max(100).email(),
