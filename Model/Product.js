@@ -1,6 +1,6 @@
 const Joi = require("joi");
 const { Schema, Types, model } = require("mongoose");
-const { default: slugify } = require("slugify");
+// const { default: slugify } = require("slugify");
 
 // const ProductSchema = new Schema({
 //   name:{

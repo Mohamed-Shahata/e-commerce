@@ -24,6 +24,9 @@ const UserSchema = new Schema({
   vereificationCode: {
     type: String,
   },
+  codeRestPassword:{
+    type: String
+  },
   registed: {
     type: Boolean,
     default: false,

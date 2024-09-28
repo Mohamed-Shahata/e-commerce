@@ -10,6 +10,7 @@ const compression = require("compression");
 const authRoute = require("./Router/authRoute.js");
 const usersRoute = require("./Router/userRoute.js");
 const passwordRoute = require("./Router/passwordRoute.js");
+const passwordMobileRoute = require("./Router/passwordMobileRoute.js");
 const productsRoute = require("./Router/productRoute.js");
 const payment = require("./Router/paymentRoute.js");
 const cookieParser = require("cookie-parser");
@@ -41,6 +42,7 @@ app.set("views" , "./views");
 app.use("/api/auth" , authRoute);
 app.use("/api/users" , usersRoute);
 app.use("/password" , passwordRoute);
+app.use("/password-mobile" , passwordMobileRoute);
 app.use("/api/products" , productsRoute);
 app.use("/api" , payment);
 

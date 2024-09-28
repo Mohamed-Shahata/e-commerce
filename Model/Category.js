@@ -1,5 +1,5 @@
 const { Schema, Types, model } = require("mongoose");
-const { default: slugify } = require("slugify");
+// const { default: slugify } = require("slugify");
 
 const categorySchema = new Schema(
   {

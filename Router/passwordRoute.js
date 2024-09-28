@@ -11,5 +11,4 @@ router.route("/forgot-password")
 router.route("/rest-password/:id/:token")
                                         .post(resetThePassword)
 
-
 module.exports = router;
