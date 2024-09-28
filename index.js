@@ -1,6 +1,3 @@
-const express = require("express");
-require("dotenv").config();
-
 import express, { json, urlencoded } from "express";
 
 
