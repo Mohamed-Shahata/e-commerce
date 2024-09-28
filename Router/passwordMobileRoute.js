@@ -1,10 +1,10 @@
-const express = require("express");
-const {
+import { Router } from "express";
+import {
     sendForgotPasswordMobile,
     verifyCode,
     resetThePasswordMobile
-} = require("../Controllers/passwordMobileControler.js");
-const router = express.Router();
+} from "../Controllers/passwordMobileControler.js";
+const router = Router();
 
 router.route("/forgot-password")
                                 .post(sendForgotPasswordMobile)
@@ -14,4 +14,4 @@ router.route("/verify-code")
 router.route("/rest-password")
                             .post(resetThePasswordMobile)
 
-module.exports = router;
+export default router;
