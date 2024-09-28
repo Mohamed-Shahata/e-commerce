@@ -1,6 +1,6 @@
-const { User } = require("../Model/User");
-const nodemailer = require("nodemailer");
-const bcryptjs = require("bcryptjs");
+import { User } from "../Model/User.js";
+import { createTransport } from "nodemailer";
+import bcryptjs from "bcryptjs";
 
 /**
  * @description Send Forgot Password Link
@@ -24,7 +24,7 @@ const sendForgotPasswordMobile = async(req , res) => {
       user.codeRestPassword = code;
       await user.save();
 
-    const trnasporter = nodemailer.createTransport({
+    const trnasporter = createTransport({
       service: "gmail",
       auth:{
         user: process.env.USER_EMAIL,
@@ -114,7 +114,7 @@ const resetThePasswordMobile = async(req , res) => {
 };
 
 
-module.exports = {
+export {
     sendForgotPasswordMobile,
     verifyCode,
     resetThePasswordMobile

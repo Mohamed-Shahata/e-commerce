@@ -1,5 +1,4 @@
 import { User } from "../Model/User.js";
-
 import jwt  from "jsonwebtoken";
 import { createTransport } from "nodemailer";
 import bcryptjs from "bcryptjs";
