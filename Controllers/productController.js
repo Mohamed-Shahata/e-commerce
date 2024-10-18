@@ -39,30 +39,33 @@ const getAllProducts = async(req , res) => {
       case "Mackup":
       case "Bags":
         filters.category = category;
-        if(minPrice && maxPrice){
+        if (minPrice || maxPrice) {
           filters.$or = [
             {
-              $and:[
-                { discount: {$exists: true , $ne: 0}},
-                { newPrice: {
-                  ...(+minPrice && { $gte: +minPrice}),
-                  ...(+maxPrice && { $lte: +maxPrice})
+              $and: [
+                { discount: { $exists: true, $ne: 0 } },
+                {
+                  newPrice: {
+                    ...(minPrice && { $gte: +minPrice }), // فلترة بناءً على minPrice إن وجد
+                    ...(maxPrice && { $lte: +maxPrice })  // فلترة بناءً على maxPrice إن وجد
                   }
                 }
               ]
             },
             {
-              $and:[
-                { discount: {$lte: 0  }},
-                { price: {
-                  ...(+minPrice && { $gte: +minPrice}),
-                  ...(+maxPrice && { $lte: +maxPrice})
+              $and: [
+                { discount: { $lte: 0 } },
+                {
+                  price: {
+                    ...(minPrice && { $gte: +minPrice }), // فلترة بناءً على minPrice إن وجد
+                    ...(maxPrice && { $lte: +maxPrice })  // فلترة بناءً على maxPrice إن وجد
                   }
                 }
               ]
-            },
-          ]
+            }
+          ];
         }
+        
         if(size){
           filters.size = size;
         }
