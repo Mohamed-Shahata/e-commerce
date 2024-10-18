@@ -14,6 +14,8 @@ const router = Router();
 
 router.route("/register").post(registerController);
 
+router.route("/login").post(loginController);
+
 router.route("/verify").post(verifyEmail);
 
 router.route("/new-code").post(sendNewCode);
