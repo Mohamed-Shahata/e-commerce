@@ -1,7 +1,6 @@
 import express, { json, urlencoded } from "express";
-
+import path from "path"; // استيراد مكتبة path
 import connectDB from "./config/db.js";
-const app = express();
 import passport from "passport";
 import "./config/passport.js";
 import cors from "cors";
@@ -14,6 +13,7 @@ import payment from "./Router/paymentRoute.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import passwordMobileRoute from "./Router/passwordMobileRoute.js";
+
 dotenv.config();
 
 connectDB();
@@ -27,26 +27,34 @@ app.use(
 );
 
 app.use(compression());
-app.use(express.json({limit: "50mb"}));
-app.use(express.urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname , "images")));
+app.use(json({ limit: "50mb" }));
+app.use(urlencoded({ extended: true }));
+app.use(express.static(path.join(__dirname, "images"))); // تقديم ملفات الصور
 app.use(cookieParser());
 
-
 //setting db/passport
-app.use(passport.initialize())
+app.use(passport.initialize());
 
 //setting ejs
-app.set("view engine" , "ejs");
-app.set("views" , "./views");
+app.set("view engine", "ejs");
+app.set("views", "./views");
 
 //Routes
-app.use("/api/auth" , authRoute);
-app.use("/api/users" , usersRoute);
-app.use("/password" , passwordRoute);
-app.use("/api/products" , productsRoute);
-app.use("/api" , payment);
+app.use("/password-mobile", passwordMobileRoute);
+app.use("/api/auth", authRouter);
+app.use("/api/users", usersRoute);
+app.use("/password", passwordRoute);
+app.use("/api/products", productsRoute);
+app.use("/api", payment);
+
+// Global Error
+app.use((err, req, res, next) => {
+  const { status, message, stack } = err;
+  res
+    .status(status || 500)
+    .json({ message, ...(process.env.MODE === "development" && { stack }) });
+});
 
 //listen server
 const PORT = process.env.PORT || 3000;
-app.listen(PORT , () => console.log("server is live"));
+app.listen(PORT, () => console.log("server is live"));
