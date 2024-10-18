@@ -47,7 +47,7 @@ export const getFavorite = async(req ,res) => {
 
         res.status(200).json(user.favorites)
     } catch (err) {
-        console.log("removerFavorite error: " , err)
+        console.log("getFavorite error: " , err)
         res.status(500).json({message: "server error"});
     }
 }
