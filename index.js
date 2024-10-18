@@ -9,7 +9,7 @@ import compression from "compression";
 import { authRouter } from "./Router/authRoute.js";
 import usersRoute from "./Router/userRoute.js";
 import passwordRoute from "./Router/passwordRoute.js";
-import productsRoute from "./Router/productRoute.js";
+import { productsRoute } from "./Router/productRoute.js";
 import payment from "./Router/paymentRoute.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
@@ -42,8 +42,6 @@ app.set("views", "./views");
 //Routes
 app.use("/password-mobile" , passwordMobileRoute);
 app.use("/api/auth", authRouter);
-app.use("/api/category", categoryRouter);
-app.use("/api/sub-category", subCategoryRouter);
 app.use("/api/users", usersRoute);
 app.use("/password", passwordRoute);
 app.use("/api/products", productsRoute);

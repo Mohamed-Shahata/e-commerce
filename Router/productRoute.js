@@ -32,4 +32,4 @@ router.route("/:id/review")
                           .delete(verifyToken , deleteReviewProduct)
 
 
-export { router };
+export {router as productsRoute} ;
