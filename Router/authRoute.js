@@ -6,7 +6,6 @@ import {
   verifyRefreshToken,
   logoutController,
   sendNewCode,
-  loginControllerView,
 } from "../Controllers/authController.js";
 import passport from "passport";
 import { verifyTokenAndAutherization } from "../middlewares/verifyToken.js";
@@ -20,8 +19,6 @@ router.route("/verify").post(verifyEmail);
 router.route("/new-code").post(sendNewCode);
 
 router.route("/refresh-token").get(verifyRefreshToken);
-
-router.route("/login").get(loginControllerView).post(loginController);
 
 router.route("/logout").post(verifyTokenAndAutherization, logoutController);
 
