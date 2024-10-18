@@ -30,9 +30,9 @@ const registerController = async(req , res) => {
       return res.status(400).json({message: "User already exists"})
     }
 
-    if(user && user.registed === true){
+    if(user && user.registered === true){
       return res.status(400).json({message: "User already exsist"});
-    }else if(user && user.registed === false){
+    }else if(user && user.registered === false){
 
       const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
@@ -79,15 +79,15 @@ const verifyEmail = async(req , res) => {
       return res.status(404).json({message: "User not found"});
     }
 
-    if(user.vereificationCode !== code){
+    if(user.verificationCode !== code){
       return res.status(401).json({message: "The code is worng"})
     }
 
     const accessToken = createToken(user);
     const createRefreshToken = refreshToken(user);
 
-    user.registed = true;
-    user.vereificationCode = null;
+    user.registered = true;
+    user.verificationCode = null;
 
     user.refreshToken = createRefreshToken;
     await user.save();
