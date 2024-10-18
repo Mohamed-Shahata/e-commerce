@@ -41,8 +41,9 @@ export const removerFavorite = async(req ,res) => {
 }
 
 export const getFavorite = async(req ,res) => {
+    const { userId } = req.body;
     try {
-        const user = await User.findById(req.params.userId).populate("favorites");
+        const user = await User.findById(userId).populate("favorites");
         if(!user) return res.status(404).json({message: "user not found"});
 
         res.status(200).json(user.favorites)

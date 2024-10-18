@@ -6,7 +6,7 @@ const router = Router();
 
 router.post("/add" , verifyToken , addFavorite);
 
-router.get("/:userId" , verifyToken , getFavorite );
+router.get("/get" , verifyToken , getFavorite );
 
 router.delete("/remove" , verifyToken , removerFavorite );
 
