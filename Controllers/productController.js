@@ -1,4 +1,4 @@
-import { ValidationCreateProduct , ValidationUpdateProduct } from "../Model/Product.js";
+import { ValidationCreateProduct , ValidationUpdateProduct , Product } from "../Model/Product.js";
 import { handleObject } from "../utils/handelObjectWithProduct.js";
 import { v2 as cloudinary } from "cloudinary";
 
