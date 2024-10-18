@@ -78,7 +78,6 @@ const ValidationRegisterUser = (obj) => {
       .max(100)
       .required(),
     password: joi.string().trim().min(8).max(50).required(),
-    role: joi.string().valid("admin", "client", "seller").required(),
     image: joi.string().trim(),
   });
 
