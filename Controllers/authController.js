@@ -1,14 +1,13 @@
-import {
+
+import { 
   User,
   ValidationRegisterUser,
-  ValidationLoginUser,
-} from "../Model/User.js";
+  ValidationLoginUser
+ } from "../Model/User.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
-import { sendVerificationCode } from "../utils/sendEmail.js";
-import { createToken, refreshToken } from "../config/jwt.js";
-import { Admin } from "../Model/admin.model.js";
-import { Client } from "../Model/client.model.js";
+import { sendVerificationCode } from "../utils/sendEmail.js"
+import { createToken, refreshToken } from "../config/jwt.js"
 
 /**
  * @description Register
@@ -16,88 +15,49 @@ import { Client } from "../Model/client.model.js";
  * @method      POST
  * @access      public
  */
-const registerController = async (req, res) => {
-  const { firstName, lastName, email, password, gender, role } = req.body;
-
-  // Validate user input
-  const { error } = ValidationRegisterUser({
-    firstName,
-    lastName,
-    email,
-    password,
-    gender,
-    role,
-  });
-
-  if (error) {
-    return res.status(400).json({ message: error.details[0].message });
+const registerController = async(req , res) => {
+  const { firstName , lastName , email , password , gender } = req.body;
+  const { error } = ValidationRegisterUser({ email });
+  if(error){
+    return res.status(400).json({message: error.details[0].message});
   }
-
-  const vereificationCode = Math.floor(
-    10000 + Math.random() * 900000
-  ).toString();
-
+    const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
   try {
-    // Check if user already exists
     let user = await User.findOne({ email });
 
-    if (user) {
-      return res.status(400).json({ message: "User already exists" });
+    if(user){
+      return res.status(400).json({message: "User already exists"})
     }
 
-    if (user && user.registed === false) {
-      // User exists but is not registered, update the verification code
+    if(user && user.registed === true){
+      return res.status(400).json({message: "User already exsist"});
+    }else if(user && user.registed === false){
+
+      const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
       user.vereificationCode = vereificationCode;
       await user.save();
-      await sendVerificationCode(email, vereificationCode);
-      return res
-        .status(401)
-        .json({ message: "Verification code sent, please verify your email" });
-    }
+      await sendVerificationCode(email , vereificationCode);
+      return res.status(401).json({message: "The code is worng"});
+    }else{
 
-    // If user does not exist, create a new user based on role
     const salt = await bcryptjs.genSalt(10);
-    const hashPassword = await bcryptjs.hash(password, salt);
+    const hashPassword = await bcryptjs.hash(password , salt);
 
-    switch (role) {
-      case "admin":
-        user = new Admin({
-          firstName,
-          lastName,
-          email,
-          password: hashPassword,
-          gender,
-          vereificationCode,
-          permissions: ["manage-users", "view-reports"], // Example permissions
-        });
-        break;
-
-      case "client":
-        user = new Client({
-          firstName,
-          lastName,
-          email,
-          password: hashPassword,
-          gender,
-          vereificationCode,
-          address: req.body.address, // Assuming address is part of Client registration
-          phone: req.body.phone, // Assuming phone is part of Client registration
-        });
-        break;
-
-      default:
-        return res.status(400).json({ message: "Invalid role provided" });
-    }
-
-    // Save the user and send verification code
+    user = new User({
+      firstName,
+      lastName,
+      password: hashPassword,
+      email,
+      vereificationCode,
+      gender
+    });
     await user.save();
-    await sendVerificationCode(email, vereificationCode);
+    await sendVerificationCode(email , vereificationCode);
 
-    res
-      .status(200)
-      .json({ message: "Check your email for the verification code" });
+    res.status(200).json({ message: "Check your email" , email });
+  }
   } catch (err) {
-    console.log("Error from register: ", err);
+    console.log("Error from register: " , err);
     res.status(500).json({ error: "Server error" });
   }
 };
@@ -108,93 +68,79 @@ const registerController = async (req, res) => {
  * @method      POST
  * @access      public
  */
-const verifyEmail = async (req, res) => {
-  const { email, code } = req.body;
+const verifyEmail = async(req , res) => {
+  const { email , code } = req.body;
   try {
-    const user = await User.findOne({ email }).select("role vereificationCode");
-    console.log({ user });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const user = await User.findOne({ email })
+    .select("-refreshToken").select("-password");
+    if(!user){
+      return res.status(404).json({message: "User not found"});
     }
 
-    if (user.vereificationCode !== code) {
-      return res.status(401).json({ message: "The code is worng" });
+    if(user.vereificationCode !== code){
+      return res.status(401).json({message: "The code is worng"})
     }
 
     const accessToken = createToken(user);
     const createRefreshToken = refreshToken(user);
 
     user.registed = true;
-    user.vereificationCode = "";
+    user.vereificationCode = null;
 
     user.refreshToken = createRefreshToken;
     await user.save();
+    user.refreshToken = undefined;
+    user.password = undefined;
 
-    // res.cookie("refreshToken", createRefreshToken, {
-    //   secure: false,
-    //   sameSite: "lax",
-    //   path: "/",
-    // });
-    res.cookie("accessToken", accessToken, {
-      httpOnly: false, // Accessible via JS on the client-side
-      secure: true, // Use HTTPS in production
-      sameSite: "Strict",
-    });
-
-    res.cookie("refreshToken", createRefreshToken, {
-      httpOnly: false,
-      secure: true,
-      sameSite: "Strict",
-    });
-    return res
-      .status(200)
-      .json({ message: "verify successfully", user, accessToken });
+    return res.status(200).json({
+      message: "verify successfully" ,
+      user ,
+      accessToken ,
+      refreshToken: createRefreshToken
+    })
+  
   } catch (err) {
-    console.log("Error from verifyEmail: ", err);
-    if (!res.headersSent) {
-      res.status(500).json({ error: "Internal server error" });
+    console.log("Error from verifyEmail: " , err);
+    if(!res.headersSent){
+      res.status(500).json({error: "Internal server error"});
     }
-  }
-};
-
-const sendNewCode = async (req, res) => {
-  const { email } = req.body;
-  const vereificationCode = Math.floor(
-    10000 + Math.random() * 900000
-  ).toString();
-  try {
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (user && user.registed === true) {
-      return res.status(400).json({ message: "User already registed" });
-    }
-    user.vereificationCode = vereificationCode;
-    await user.save();
-    await sendVerificationCode(email, vereificationCode);
-    res.status(200).json({ message: "check your email again" });
-  } catch (err) {
-    console.log("Error from sendNewCode: ", err);
     res.status(500).json({ error: "Server error" });
   }
 };
 
+const sendNewCode = async(req , res) => {
+  const { email } = req.body;
+  const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
+  try {
+    const user = await User.findOne({ email });
+
+    if(!user){
+      return res.status(404).json({message: "User not found"})
+    }
+
+    if(user && user.registed === true){
+      return res.status(400).json({message: "User already registed"})
+    }
+    user.vereificationCode = vereificationCode;
+    await user.save();
+    await sendVerificationCode(email , vereificationCode);
+    res.status(200).json({message: "check your email again"})
+  } catch (err) {
+    console.log("Error from sendNewCode: " , err);
+    res.status(500).json({ error: "Server error" });
+  }
+}
+
+
+
 /**
- * @description Login
+ * @description Login 
  * @route       /api/auth/login
  * @method      POST
  * @access      public
  */
 
-const loginControllerView = (req, res) => {
-  res.render("login/login");
-};
-
-const loginController = async (req, res) => {
+const loginController = async(req, res) => {
   const { error } = ValidationLoginUser(req.body);
   if (error) {
     return res.status(400).json({ message: error.details[0].message });
@@ -202,79 +148,72 @@ const loginController = async (req, res) => {
 
   const { email, password, remmber } = req.body;
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email }).select("-refreshToken");
     if (!user) {
       return res.status(404).json({ message: "User not found" });
     }
     if (user.registed === false) {
-      return res
-        .status(400)
-        .json({ message: "Complete creating your account" });
+      return res.status(400).json({ message: "Complete creating your account" });
     }
-    const comparePassword = bcryptjs.compare(password, user.password);
 
-    if (email !== user.email || comparePassword == false) {
-      return res.status(401).json({ message: "email or password is worng" });
+    const comparePassword = await bcryptjs.compare(password, user.password);
+    if (email !== user.email || comparePassword === false) {
+      return res.status(401).json({ message: "Email or password is wrong" });
     }
 
     const accessToken = createToken(user);
     const createRefreshToken = refreshToken(user);
 
     user.refreshToken = createRefreshToken;
+    
     await user.save();
+    user.refreshToken = undefined;
+    user.password = undefined;
 
-    res.cookie("refreshToken", createRefreshToken, {
-      secure: false,
-      sameSite: "lax",
-      path: "/",
-    });
-
-    res.status(200).json({
-      message: "login successfully",
+    return res.status(200).json({
+      message: "Login successful",
       user,
       accessToken,
-      createRefreshToken,
+      refreshToken: createRefreshToken
     });
   } catch (err) {
-    console.log("Error from Login: ", err);
+    console.log("Error from loginController: " , err);
     res.status(500).json({ error: "Server error" });
   }
 };
 
-const verifyRefreshToken = async (req, res) => {
-  const refreshToken = req.cookies.refreshToken;
-  if (!refreshToken) {
-    return res.status(401).json({ message: "is logout" });
-  }
-  const user = await User.findOne({ refreshToken })
-    .select("-refreshToken")
-    .select("-password");
-  if (!user) {
-    return res.status(403);
-  }
 
-  jwt.verify(
-    refreshToken,
-    process.env.JWT_SECRET_KEY_REFRESH,
-    (err, decoded) => {
-      if (err) {
-        return res.status(403);
-      }
-      const accessToken = createToken(user);
-      res.status(200).json({ accessToken: accessToken, user: user });
+
+const verifyRefreshToken = async(req , res) => {
+  const { refreshToken } = req.body;
+  if(!refreshToken){
+    return res.status(401).json({message: "is logout"});
+  };
+  const user = await User.findOne({ refreshToken })
+  .select("-refreshToken").select("-password");
+  if(!user){
+    return res.status(403);
+  };
+
+  jwt.verify(refreshToken, process.env.JWT_SECRET_KEY_REFRESH, (err , decoded) => {
+    if(err){
+      return res.status(403)
     }
-  );
+    const accessToken = createToken(user);
+    res.status(200).json({ accessToken:accessToken , user: user });
+  })
 };
 
-const logoutController = async (req, res) => {
-  const user = await User.findOne({ refreshToken: req.cookies.refreshToken });
-  if (user) {
+const logoutController = async(req , res) => {
+  const user = await User.findOne({refreshToken: req.body.refreshToken})
+  if(user){
     user.refreshToken = null;
     await user.save();
+  }else{
+    return res.status(200).json({message: "user not found"});
   }
-  res.clearCookie("refreshToken");
-  res.status(200).json({ message: "logout successfully" });
-};
+  res.status(200).json({message: "logout successfully"});
+}
 
 export {
   registerController,
@@ -283,5 +222,4 @@ export {
   verifyEmail,
   verifyRefreshToken,
   sendNewCode,
-  loginControllerView,
 };
