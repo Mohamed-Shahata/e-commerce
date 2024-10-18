@@ -97,8 +97,12 @@ const ValidationLoginUser = (obj) => {
 // Function Validation Update User
 const ValidationUpdateUser = (obj) => {
   const schema = joi.object({
+    firstName: joi.string().trim().min(1).max(100),
+    lastName: joi.string().trim().min(1).max(100),
+    gender: joi.string().valid("male", "female"),
     email: joi.string().trim().min(1).max(100).email(),
     image: joi.string().trim(),
+    password: joi.string().trim().min(8).max(50),
   });
 
   return schema.validate(obj);
