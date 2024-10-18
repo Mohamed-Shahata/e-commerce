@@ -21,6 +21,7 @@ const registerController = async(req , res) => {
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }
+  const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
 
   try {
     let user = await User.findOne({ email });
