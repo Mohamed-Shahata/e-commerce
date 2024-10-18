@@ -1,12 +1,8 @@
-import {
-  Product, ValidationCreateProduct, ValidationUpdateProduct,
-} from "../Model/Product.js";
-
+import { ValidationCreateProduct , ValidationUpdateProduct } from "../Model/Product.js";
 import { handleObject } from "../utils/handelObjectWithProduct.js";
-
-import { clothesCategory } from "../utils/validatCategory.js";
-
 import { v2 as cloudinary } from "cloudinary";
+
+
 
 /**
  * @description Get All Products
@@ -105,7 +101,7 @@ const getAllProducts = async(req , res) => {
         }
         if(language){
           filters.language = language;
-        }// product model 
+        }
         if(authors){
           filters.authors = authors;
         }
@@ -397,3 +393,4 @@ export {
   updateReviewProduct,
   deleteReviewProduct
 };
+
