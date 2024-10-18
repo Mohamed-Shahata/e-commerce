@@ -1,5 +1,6 @@
 import express, { json, urlencoded } from "express";
-import path from "path"; // استيراد مكتبة path
+import { dirname , join } from "path";
+import { fileURLToPath } from "url";
 import connectDB from "./config/db.js";
 import passport from "passport";
 import "./config/passport.js";
@@ -18,6 +19,9 @@ dotenv.config();
 
 const app = express();
 
+const __filename = fileURLToPath(import.meta.url); // احصل على اسم الملف الحالي
+const __dirname = dirname(__filename); // احصل على الدليل الحالي
+
 connectDB();
 
 
@@ -32,7 +36,7 @@ app.use(
 app.use(compression());
 app.use(json({ limit: "50mb" }));
 app.use(urlencoded({ extended: true }));
-app.use(express.static(path.join(__dirname, "images"))); // تقديم ملفات الصور
+app.use(express.static(join(__dirname, "images"))); // تقديم ملفات الصور
 app.use(cookieParser());
 
 //setting db/passport
