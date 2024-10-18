@@ -1,6 +1,6 @@
 import { User, ValidationUpdateUser } from "../Model/User.js";
 import bcryptjs from "bcryptjs";
-import  uploader  from "../config/cloudinary.js";
+import  cloudinary  from "../config/cloudinary.js";
 
 /**
  * @description Get All Users
@@ -59,7 +59,7 @@ const updateUser = async (req, res) => {
 
     if (req.file) {
       if (user.imagePublicId !== "") {
-        await uploader.destroy(user.imagePublicId);
+        await cloudinary.destroy(user.imagePublicId);
       }
 
       user.image = req.file.path;
@@ -109,7 +109,7 @@ const deleteUser = async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     if (user.imagePublicId !== "") {
-      await uploader.destroy(user.imagePublicId);
+      await cloudinary.destroy(user.imagePublicId);
     }
     res.status(200).json({ message: "deleted user successfully" });
   } catch (err) {
