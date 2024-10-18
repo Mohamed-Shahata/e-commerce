@@ -1,7 +1,7 @@
 import joi from "joi";
-import { Schema, model } from "mongoose";
+import mongoose from "mongoose";
 
-const UserSchema = new Schema(
+const UserSchema = new mongoose.Schema(
   {
     firstName: {
       type: String,
@@ -104,7 +104,7 @@ const ValidationUpdateUser = (obj) => {
   return schema.validate(obj);
 };
 
-const User = model("User", UserSchema);
+const User = mongoose.model("User", UserSchema);
 
 export {
   User,

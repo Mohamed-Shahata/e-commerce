@@ -21,7 +21,7 @@ const registerController = async(req , res) => {
   if(error){
     return res.status(400).json({message: error.details[0].message});
   }
-    const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
+
   try {
     let user = await User.findOne({ email });
 
@@ -33,10 +33,11 @@ const registerController = async(req , res) => {
       return res.status(400).json({message: "User already exsist"});
     }else if(user && user.registed === false){
 
-      const vereificationCode = Math.floor(10000 + Math.random() * 900000).toString();
-      user.vereificationCode = vereificationCode;
+      const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+
+      user.verificationCode = verificationCode;
       await user.save();
-      await sendVerificationCode(email , vereificationCode);
+      await sendVerificationCode(email , verificationCode);
       return res.status(401).json({message: "The code is worng"});
     }else{
 
@@ -48,11 +49,11 @@ const registerController = async(req , res) => {
       lastName,
       password: hashPassword,
       email,
-      vereificationCode,
+      verificationCode,
       gender
     });
     await user.save();
-    await sendVerificationCode(email , vereificationCode);
+    await sendVerificationCode(email , verificationCode);
 
     res.status(200).json({ message: "Check your email" , email });
   }
