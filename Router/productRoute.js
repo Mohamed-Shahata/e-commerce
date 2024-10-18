@@ -19,7 +19,7 @@ router.route("/")
                 .post(verifyTokenAndAdmin , upload.array("images") , createProduct )
 
 router.route("/:id")
-                  .get(verifyToken , getSingleProducts)
+                  .get(getSingleProducts)
                   .put(verifyTokenAndAdmin , upload.array("images") , updateProduct)
                   .delete(verifyTokenAndAdmin , deleteproduct)
 

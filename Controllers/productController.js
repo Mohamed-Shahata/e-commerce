@@ -46,8 +46,8 @@ const getAllProducts = async(req , res) => {
                 { discount: { $exists: true, $ne: 0 } },
                 {
                   newPrice: {
-                    ...(minPrice && { $gte: +minPrice }), // فلترة بناءً على minPrice إن وجد
-                    ...(maxPrice && { $lte: +maxPrice })  // فلترة بناءً على maxPrice إن وجد
+                    ...(minPrice && { $gte: +minPrice }),
+                    ...(maxPrice && { $lte: +maxPrice })
                   }
                 }
               ]
@@ -57,8 +57,8 @@ const getAllProducts = async(req , res) => {
                 { discount: { $lte: 0 } },
                 {
                   price: {
-                    ...(minPrice && { $gte: +minPrice }), // فلترة بناءً على minPrice إن وجد
-                    ...(maxPrice && { $lte: +maxPrice })  // فلترة بناءً على maxPrice إن وجد
+                    ...(minPrice && { $gte: +minPrice }),
+                    ...(maxPrice && { $lte: +maxPrice })
                   }
                 }
               ]
