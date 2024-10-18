@@ -16,7 +16,10 @@ import passwordMobileRoute from "./Router/passwordMobileRoute.js";
 
 dotenv.config();
 
+const app = express();
+
 connectDB();
+
 
 //middlewares
 app.use(
