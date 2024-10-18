@@ -12,7 +12,7 @@ import {
 } from "../middlewares/verifyToken.js";
 
 const router = Router();
-import { upload } from "../middlewares/uploadImage.middleware.js";
+import { upload } from "../middlewares/uploadImage.js";
 
 // /api/users
 router.get("/", verifyTokenAndAdmin, getAllUser);
