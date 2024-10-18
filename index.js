@@ -52,7 +52,7 @@ app.use((err, req, res, next) => {
   const { status, message, stack } = err;
   res
     .status(status || 500)
-    .json({ message, ...(process.env.MODE === "development" && { stack }) });
+    .json({ message, ...(process.env.NODE_ENV === "development" && { stack }) });
 });
 
 //listen server
