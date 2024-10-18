@@ -1,9 +1,7 @@
 import express, { json, urlencoded } from "express";
 
-
 import connectDB from "./config/db.js";
 const app = express();
-import { join } from "path";
 import passport from "passport";
 import "./config/passport.js";
 import cors from "cors";
@@ -15,8 +13,6 @@ import productsRoute from "./Router/productRoute.js";
 import payment from "./Router/paymentRoute.js";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import { categoryRouter } from "./Router/category.routes.js";
-import { subCategoryRouter } from "./Router/SubCategory..routes.js";
 import passwordMobileRoute from "./Router/passwordMobileRoute.js";
 dotenv.config();
 
