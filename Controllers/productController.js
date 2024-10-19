@@ -318,7 +318,7 @@ const reviewProduct = async(req ,res) => {
 }
 
 const updateReviewProduct = async(req ,res) => {
-  const { reviewNum , userId } = req.body
+  const { reviewNum , userId , text } = req.body
   const id = req.params.id;
   try {
 
@@ -342,6 +342,7 @@ const updateReviewProduct = async(req ,res) => {
     
     reviewProduct.user = userId || reviewProduct.user;
     reviewProduct.averageRating = reviewNum || reviewProduct.averageRating
+    reviewProduct.text = text || reviewProduct.text
     await product.save();
     res.status(200).json({product});
   } catch (err) {
