@@ -71,7 +71,7 @@ const ValidationRegisterUser = (obj) => {
   const schema = joi.object({
     firstName: joi.string().trim().min(1).max(100).required(),
     lastName: joi.string().trim().min(1).max(100).required(),
-    gender: joi.string().valid("male", "female").required(),
+    gender: joi.string().valid("Male", "Female").required(),
     email: joi
       .string()
       .email({
