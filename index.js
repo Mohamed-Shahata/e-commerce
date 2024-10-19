@@ -28,7 +28,7 @@ connectDB();
 
 //middlewares
 app.use(
-  cors({origin: "https://osama78s.github.io/E-commerce/#/",credentials: true,})
+  cors({origin: "https://osama78s.github.io/E-commerce/#/",credentials: true})
   //
 );
 
