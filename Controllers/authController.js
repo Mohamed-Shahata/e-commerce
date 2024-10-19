@@ -187,6 +187,7 @@ const loginController = async(req, res) => {
 
 
 const verifyRefreshToken = async(req , res) => {
+try {
   const { refreshToken } = req.body;
   if(!refreshToken){
     return res.status(401).json({message: "is logout"});
@@ -204,6 +205,10 @@ const verifyRefreshToken = async(req , res) => {
     const accessToken = createToken(user);
     res.status(200).json({ accessToken:accessToken , user: user });
   })
+} catch (err) {
+  console.log("Error from verifyRefreshToken: " , err);
+  res.status(500).json({ error: "Server error" });
+}
 };
 
 const logoutController = async(req , res) => {
