@@ -17,7 +17,7 @@ const getAllProducts = async(req , res) => {
     material, Capacity, Smells, language, authors
   } = req.query;
   try {
-    const pageProducts = 5;
+    const pageProducts = 9;
 
     let products;
     if(!category){
